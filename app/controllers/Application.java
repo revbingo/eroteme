@@ -18,6 +18,9 @@ public class Application extends Controller {
     }
     
     public static Result quiz() {
+    	if(session().get("teamName") == null) {
+    		return redirect("/");
+    	}
     	return ok(quiz.render(session().get("teamName")));
     }
 }
