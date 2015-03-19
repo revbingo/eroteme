@@ -15,6 +15,14 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.16/require.min.js" data-main="assets/javascripts/app/main"></script>
     </head>
     <body>
-        @content
+	    <div class="site-wrapper">
+	      <div class="site-wrapper-inner">
+	        <div class="cover-container">
+	            @bootstrap.masthead("qu.est.io/ns")
+		
+        		@content
+    		</div>
+      	  </div>
+       </div>
     </body>
 </html>
