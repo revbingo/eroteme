@@ -1,0 +1,13 @@
+@(teamName:String)
+
+@main("qu.est.io/ns ho.me") {
+	<h1>Welcome @teamName</h1>
+	
+	<script>
+		var socket = new WebSocket("ws://localhost:9000/api/bind");
+		
+		socket.onopen = function() {
+			alert("now connected!");
+		}
+	</script>
+}

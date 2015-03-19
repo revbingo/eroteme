@@ -1,9 +1,9 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
-
-import views.html.*;
+import play.mvc.Controller;
+import play.mvc.Result;
+import views.html.index;
+import views.html.quiz;
 
 public class Application extends Controller {
 
@@ -13,6 +13,11 @@ public class Application extends Controller {
     
     public static Result signup() {
     	String teamName = request().body().asFormUrlEncoded().get("teamName")[0];
-    	return ok(signup.render(teamName));
+    	session().put("teamName", teamName);
+    	return redirect("/quiz");
+    }
+    
+    public static Result quiz() {
+    	return ok(quiz.render(session().get("teamName")));
     }
 }
