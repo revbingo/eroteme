@@ -10,8 +10,6 @@ requirejs.config({
     }
 });
 
-//Define dependencies and pass a callback when dependencies have been loaded
 require(["bootstrap", "jquery"], function ($) {
-    //Bootstrap and jquery are ready to use here
-    //Access jquery and bootstrap plugins with $ variable
-});	
+
+});

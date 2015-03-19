@@ -47,7 +47,10 @@ body {
 .site-wrapper-inner {
   display: table-cell;
   vertical-align: top;
+  background: linear-gradient( rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.9) ), url("../images/masthead.jpg");
+  opacity: 50%;
 }
+
 .cover-container {
   margin-right: auto;
   margin-left: auto;
