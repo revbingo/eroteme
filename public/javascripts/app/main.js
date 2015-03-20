@@ -10,6 +10,14 @@ requirejs.config({
     }
 });
 
-require(["bootstrap", "jquery"], function ($) {
-
+require(["jquery", "bootstrap"], function ($) {
+	var socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind");
+	
+	socket.onopen = function() {
+		socket.send("ping!")
+	}
+	
+	socket.onmessage = function(event) {
+		$("#state").html("Ready!")
+	}
 });
