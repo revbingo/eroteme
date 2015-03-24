@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, jsFile: String)(content: Html)
 
 <!DOCTYPE html>
 
@@ -12,7 +12,14 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="@routes.Assets.at("stylesheets/cover.css")">
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.16/require.min.js" data-main="@routes.Assets.at("javascripts/app/main.js")"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.16/require.min.js"></script>
+		<script>
+			require(['@routes.Assets.at("javascripts/app/main.js")'], function() {
+				@if(jsFile) {
+					require(['@jsFile']);
+				}
+			})
+		</script>
     </head>
     <body>
 	    <div class="site-wrapper">

@@ -1,11 +1,11 @@
 @(teamName:String)
 
-@main("qu.est.io/ns ho.me") {
+@main("qu.est.io/ns ho.me", "quiz") {
 	
 	<h1>Welcome @teamName</h1>
 	
 	<h2 id="state">Connecting...</h2>
 	<script>
-		
+		window.teamName = "@teamName"
 	</script>
 }
