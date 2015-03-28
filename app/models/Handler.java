@@ -1,8 +1,10 @@
 package models;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import akka.actor.ActorRef;
 
 public interface Handler {
 
-	public void handle(ActorRef out);
+	public Object handle(ActorRef out, JsonNode message);
 }
