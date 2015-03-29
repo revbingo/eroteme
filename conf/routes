@@ -8,7 +8,7 @@ POST	/signup						controllers.Application.signup()
 GET		/quiz						controllers.Application.quiz()
 
 # Websocket API
-GET		/api/bind					controllers.WSControl.bind()
+GET		/api/bind					controllers.WSControl.bind(teamName:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
