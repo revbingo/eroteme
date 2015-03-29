@@ -6,9 +6,12 @@ import java.util.Set;
 
 import play.Logger;
 import play.Logger.ALogger;
-import play.libs.Json;
+import play.libs.Akka;
 import play.libs.F.Option;
+import play.libs.Json;
 import play.mvc.WebSocket;
+import akka.actor.ActorRef;
+import akka.actor.Props;
 import akka.actor.UntypedActor;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,10 +23,12 @@ public class QuizManager extends UntypedActor {
 	private WebSocket.Out<JsonNode> admin;
 
 	private ALogger requestLogger = Logger.of("requestLogger");
+
+	private static ActorRef questionAsker = Akka.system().actorOf(Props.create(QuestionAsker.class));
 	
 	public QuizManager() {
 		handlers = new HashMap<>();
-		handlers.put("nextQuestion", new NextQuestionHandler(teams));
+		handlers.put("nextQuestion", new NextQuestionHandler(questionAsker));
 	}
 
 	@Override
@@ -35,7 +40,9 @@ public class QuizManager extends UntypedActor {
 				teams.put(join.teamName, join.out);
 				sender().tell(Option.Some(new RegistrationResponse()), self());
 				
-				admin.write(Json.toJson(new TeamListResponse(teams.keySet())));
+				if(admin != null) {
+					admin.write(Json.toJson(new TeamListResponse(teams.keySet())));
+				}
 			} else {
 				requestLogger.info("Admin");
 				admin = join.out;
@@ -63,21 +70,37 @@ public class QuizManager extends UntypedActor {
 		return handler;
 	}
 	
-	public static class NullHandler implements Handler {
+	public class NullHandler implements Handler {
 
 		@Override
 		public Option<Object> handle(JsonNode message) {
 			return Option.Some(new ErrorResponse("Message type " + message.get("type").asText() + " not recognised"));
 		}
-		
+
 	}
 	
-	public static class RegistrationResponse {
+	public class NextQuestionHandler implements Handler {
+
+		private ActorRef actor;
+		
+		public NextQuestionHandler(ActorRef actor) {
+			this.actor = actor;
+		}
+		
+		@Override
+		public Option<Object> handle(JsonNode message) {
+			actor.tell(new NextQuestionRequest(teams), null);
+			return Option.None();
+		}
+
+	}
+	
+	public class RegistrationResponse {
 		public String type = "registrationResponse";
 		public int statusCode = 200;
 	}
 	
-	public static class ErrorResponse {
+	public class ErrorResponse {
 		
 		public String type = "error";
 		public String message;
@@ -97,11 +120,19 @@ public class QuizManager extends UntypedActor {
 		}
 	}
 	
-	public static class TeamListResponse {
+	public class TeamListResponse {
 		public String type = "teamList";
 		public Set<String> teams;
 		
 		public TeamListResponse(Set<String> teams) {
+			this.teams = teams;
+		}
+	}
+	
+	public class NextQuestionRequest {
+		public Map<String, WebSocket.Out<JsonNode>> teams;
+		
+		public NextQuestionRequest(Map<String, WebSocket.Out<JsonNode>> teams) {
 			this.teams = teams;
 		}
 	}
