@@ -22,7 +22,6 @@ import akka.actor.UntypedActor;
 
 public class QuizManager extends UntypedActor {
 
-	private final static ActorRef quizActor = Akka.system().actorOf(Props.create(QuizManager.class));
 	
 	private final Map<String, Handler> handlers;
 	
@@ -30,21 +29,8 @@ public class QuizManager extends UntypedActor {
 	
 	public QuizManager() {
 		handlers = new HashMap<>();
-		handlers.put("REGISTER", new RegistrationHandler());
 	}
 
-	public static void join(String teamName, WebSocket.In<JsonNode> in, WebSocket.Out<JsonNode> out) throws Exception {
-		Await.result(ask(quizActor, new Join(teamName, out), 1000), Duration.create(1, TimeUnit.SECONDS));
-		
-		in.onMessage(new Callback<JsonNode>() {
-			@Override
-			public void invoke(JsonNode json) throws Throwable {
-				Logger.debug("Sending json" + Json.stringify(json));
-				quizActor.tell(json, null);
-			}
-		});
-	}
-	
 	public static class Join {
 		public String teamName;
 		public WebSocket.Out<JsonNode> out;
@@ -79,14 +65,6 @@ public class QuizManager extends UntypedActor {
 		Handler handler = handlers.get(type);
 		if(handler == null) handler = new NullHandler();
 		return handler;
-	}
-	
-	public static class RegistrationHandler implements Handler {
-		
-		@Override
-		public Object handle(JsonNode message) {
-			return new RegistrationResponse();
-		}
 	}
 	
 	public static class NullHandler implements Handler {
