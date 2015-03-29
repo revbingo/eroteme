@@ -5,10 +5,10 @@ import static akka.pattern.Patterns.ask;
 import java.util.concurrent.TimeUnit;
 
 import models.QuizManager;
-import models.QuizManager.Join;
+import models.QuizManager.JoinRequest;
 import models.QuizManager.RegistrationResponse;
 import play.libs.Akka;
-import play.libs.F.Callback;
+import play.libs.F.Option;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
@@ -19,6 +19,7 @@ import akka.actor.Props;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+@SuppressWarnings("unchecked")
 public class WSControl extends Controller {
 	
 	private final static ActorRef quizActor = Akka.system().actorOf(Props.create(QuizManager.class));
@@ -27,15 +28,17 @@ public class WSControl extends Controller {
 	public static WebSocket<JsonNode> bind(String teamName) {
 		return WebSocket.whenReady((in,out) -> {
 			in.onMessage((json) -> {
-					Object response = Await.result(ask(quizActor, json, TIMEOUT.toMillis()), TIMEOUT);
-					out.write(Json.toJson(response));
+				Option<Object> response = (Option<Object>) Await.result(ask(quizActor, json, TIMEOUT.toMillis()), TIMEOUT);
+				if(!response.isEmpty()) {
+					out.write(Json.toJson(response.get()));
+				}
 			});
 			
 			out.write(Json.toJson(registerWithQuizManager(teamName, out)));
 		});
 	}
 	
-	private static RegistrationResponse registerWithQuizManager(String teamName, WebSocket.Out<JsonNode> out) throws Exception {
-		return (RegistrationResponse) Await.result(ask(quizActor, new Join(teamName, out), TIMEOUT.toMillis()), TIMEOUT);
+	private static Option<RegistrationResponse> registerWithQuizManager(String teamName, WebSocket.Out<JsonNode> out) throws Exception {
+		return (Option<RegistrationResponse>) Await.result(ask(quizActor, new JoinRequest(teamName, out), TIMEOUT.toMillis()), TIMEOUT);
 	}
 }

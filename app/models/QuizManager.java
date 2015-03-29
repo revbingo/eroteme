@@ -1,12 +1,10 @@
 package models;
 
-import static play.libs.Json.toJson;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import play.Logger;
-import play.libs.Json;
+import play.libs.F.Option;
 import play.mvc.WebSocket;
 import akka.actor.UntypedActor;
 
@@ -15,34 +13,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class QuizManager extends UntypedActor {
 
 	private final Map<String, Handler> handlers;
+	public final Map<String, WebSocket.Out<JsonNode>> teams = new HashMap<>();
 	
 	public QuizManager() {
 		handlers = new HashMap<>();
 	}
 
-	public static class Join {
-		public String teamName;
-		public WebSocket.Out<JsonNode> out;
-		
-		public Join(String teamName, WebSocket.Out<JsonNode> out) {
-			this.teamName = teamName;
-			this.out = out;
-		}
-	}
-	
 	@Override
 	public void onReceive(Object message) throws Exception {
 		Logger.debug("onReceive " + message.getClass().getCanonicalName());
-		if(message instanceof Join) {
-			Join join = (Join) message;
-			sender().tell(new RegistrationResponse(), self());
+		
+		if(message instanceof JoinRequest) {
+			JoinRequest join = (JoinRequest) message;
+			teams.put(join.teamName, join.out);
+			sender().tell(Option.Some(new RegistrationResponse()), self());
 		} else if(message instanceof JsonNode) {
 			JsonNode jsonMessage = (JsonNode) message;
 			Handler handler = getHandlerForMessage(jsonMessage);
 			Object response = handler.handle(jsonMessage);
-			sender().tell(toJson(response), self());
+			
+			sender().tell(response, self());
 		} else {
-			return;
+			sender().tell(Option.None(), self());
 		}
 	}
 
@@ -57,9 +49,8 @@ public class QuizManager extends UntypedActor {
 	public static class NullHandler implements Handler {
 
 		@Override
-		public Object handle(JsonNode message) {
-			Logger.debug(Json.stringify(message));
-			return new ErrorResponse("Message type " + message.get("type").asText() + " not recognised");
+		public Option<Object> handle(JsonNode message) {
+			return Option.Some(new ErrorResponse("Message type " + message.get("type").asText() + " not recognised"));
 		}
 		
 	}
@@ -78,4 +69,15 @@ public class QuizManager extends UntypedActor {
 			this.message = message;
 		}
 	}
+	
+	public static class JoinRequest {
+		public String teamName;
+		public WebSocket.Out<JsonNode> out;
+		
+		public JoinRequest(String teamName, WebSocket.Out<JsonNode> out) {
+			this.teamName = teamName;
+			this.out = out;
+		}
+	}
+
 }
