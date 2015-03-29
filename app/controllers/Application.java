@@ -2,8 +2,6 @@ package controllers;
 
 import java.util.Base64;
 
-import play.api.libs.Crypto;
-import play.api.mvc.Codec;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;

@@ -4,4 +4,8 @@ require(["jquery", "bootstrap"], function ($) {
 	socket.onmessage = function(event) {
 		$("#state").html(event.data)
 	}	
+	
+	socket.onclose = function(event) {
+		alert("oh, I lost connection");
+	}
 });

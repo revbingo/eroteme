@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import models.QuizManager;
 import models.QuizManager.JoinRequest;
-import models.QuizManager.RegistrationResponse;
 import play.libs.Akka;
 import play.libs.F.Option;
 import play.libs.Json;
@@ -23,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class WSControl extends Controller {
 	
 	private final static ActorRef quizActor = Akka.system().actorOf(Props.create(QuizManager.class));
+	
 	private final static Duration TIMEOUT = Duration.create(1, TimeUnit.SECONDS);
 	
 	public static WebSocket<JsonNode> bind(String teamName) {
@@ -38,7 +38,7 @@ public class WSControl extends Controller {
 		});
 	}
 	
-	private static Option<RegistrationResponse> registerWithQuizManager(String teamName, WebSocket.Out<JsonNode> out) throws Exception {
-		return (Option<RegistrationResponse>) Await.result(ask(quizActor, new JoinRequest(teamName, out), TIMEOUT.toMillis()), TIMEOUT);
+	private static Option<Object> registerWithQuizManager(String teamName, WebSocket.Out<JsonNode> out) throws Exception {
+		return (Option<Object>) Await.result(ask(quizActor, new JoinRequest(teamName, out), TIMEOUT.toMillis()), TIMEOUT);
 	}
 }

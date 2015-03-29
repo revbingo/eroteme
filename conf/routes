@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index()
 POST	/signup						controllers.Application.signup()
 GET		/quiz						controllers.Application.quiz()
+GET		/admin						controllers.Admin.index()
 
 # Websocket API
 GET		/api/bind					controllers.WSControl.bind(teamName:String)
