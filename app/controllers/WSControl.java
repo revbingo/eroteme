@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import models.QuizManager;
 import models.QuizManager.JoinRequest;
+import play.Logger;
 import play.libs.Akka;
 import play.libs.F.Option;
 import play.libs.Json;
@@ -34,7 +35,7 @@ public class WSControl extends Controller {
 				}
 			});
 			
-			out.write(Json.toJson(registerWithQuizManager(teamName, out)));
+			out.write(Json.toJson(registerWithQuizManager(teamName, out).get()));
 		});
 	}
 	
