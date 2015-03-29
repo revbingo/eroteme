@@ -3,12 +3,5 @@ require(["jquery", "bootstrap"], function ($) {
 	
 	socket.onmessage = function(event) {
 		$("#state").html(event.data)
-	}
-	
-	function RegistrationMessage(teamName) {
-		this.type = "REGISTER";
-		this.teamName = teamName;
-		
-		return this;
-	}
+	}	
 });

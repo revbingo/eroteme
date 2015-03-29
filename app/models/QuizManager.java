@@ -1,31 +1,20 @@
 package models;
 
-import static play.libs.Json.*;
-import static akka.pattern.Patterns.ask;
+import static play.libs.Json.toJson;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+
+import play.Logger;
+import play.libs.Json;
+import play.mvc.WebSocket;
+import akka.actor.UntypedActor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import play.Logger;
-import play.libs.Akka;
-import play.libs.F.Callback;
-import play.libs.Json;
-import play.mvc.WebSocket;
-import scala.concurrent.Await;
-import scala.concurrent.duration.Duration;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.UntypedActor;
-
 public class QuizManager extends UntypedActor {
 
-	
 	private final Map<String, Handler> handlers;
-	
-	private Map<String, WebSocket.Out<JsonNode>> teams = new HashMap<>();
 	
 	public QuizManager() {
 		handlers = new HashMap<>();
@@ -46,14 +35,12 @@ public class QuizManager extends UntypedActor {
 		Logger.debug("onReceive " + message.getClass().getCanonicalName());
 		if(message instanceof Join) {
 			Join join = (Join) message;
-			teams.put(join.teamName, join.out);
-			sender().tell("OK",self());
+			sender().tell(new RegistrationResponse(), self());
 		} else if(message instanceof JsonNode) {
 			JsonNode jsonMessage = (JsonNode) message;
 			Handler handler = getHandlerForMessage(jsonMessage);
 			Object response = handler.handle(jsonMessage);
-			WebSocket.Out<JsonNode> out = teams.get(jsonMessage.get("teamName").asText());
-			out.write(toJson(response));
+			sender().tell(toJson(response), self());
 		} else {
 			return;
 		}
