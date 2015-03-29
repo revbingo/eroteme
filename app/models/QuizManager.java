@@ -34,6 +34,8 @@ public class QuizManager extends UntypedActor {
 				requestLogger.info("Join:" + join.teamName);
 				teams.put(join.teamName, join.out);
 				sender().tell(Option.Some(new RegistrationResponse()), self());
+				
+				admin.write(Json.toJson(new TeamListResponse(teams.keySet())));
 			} else {
 				requestLogger.info("Admin");
 				admin = join.out;
