@@ -6,12 +6,8 @@ import java.util.Set;
 
 import play.Logger;
 import play.Logger.ALogger;
-import play.libs.Akka;
 import play.libs.F.Option;
 import play.libs.Json;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.UntypedActor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -23,31 +19,31 @@ public class QuizManager {
 
 	private ALogger requestLogger = Logger.of("requestLogger");
 
-	private static ActorRef questionAsker = Akka.system().actorOf(Props.create(QuestionAsker.class));
+	private static QuestionAsker questionAsker = new QuestionAsker();
 	
 	public QuizManager() {
 		handlers = new HashMap<>();
 		handlers.put("nextQuestion", new NextQuestionHandler(questionAsker));
-//		handlers.out("answer", new AnswerHandler(questionAsker));
 	}
 
-	public Option<Object> onReceive(Object message) throws Exception {
-		if(message instanceof JoinRequest) {
-			JoinRequest join = (JoinRequest) message;
-			if(!join.teamName.isEmpty()) {
-				requestLogger.info("Join:" + join.teamName);
-				teamRoster.put(join.teamName, join.out);
-				
-				if(admin != null) {
-					admin.get().write(Json.toJson(new TeamListResponse(teamRoster.keySet())));
-				}
-				return Option.Some(new RegistrationResponse());
-			} else {
-				requestLogger.info("Admin");
-				admin = join.out;
-				return Option.Some(new TeamListResponse(teamRoster.keySet()));
+	public Option<Object> join(JoinRequest join) {
+		if(!join.teamName.isEmpty()) {
+			requestLogger.info("Join:" + join.teamName);
+			teamRoster.put(join.teamName, join.out);
+			
+			if(admin != null) {
+				admin.get().write(Json.toJson(new TeamListResponse(teamRoster.keySet())));
 			}
-		} else if(message instanceof JsonNode) {
+			return Option.Some(new RegistrationResponse());
+		} else {
+			requestLogger.info("Admin");
+			admin = join.out;
+			return Option.Some(new TeamListResponse(teamRoster.keySet()));
+		}
+	}
+	
+	public Option<Object> messageReceived(Object message) throws Exception {
+		if(message instanceof JsonNode) {
 			JsonNode jsonMessage = (JsonNode) message;
 			requestLogger.info("Json:" + Json.stringify(jsonMessage));
 			Handler handler = getHandlerForMessage(jsonMessage);
@@ -74,7 +70,6 @@ public class QuizManager {
 		public Option<Object> handle(JsonNode message) {
 			return Option.Some(new ErrorResponse("Message type " + message.get("type").asText() + " not recognised"));
 		}
-
 	}
 	
 	public class NextQuestionHandler implements Handler {
@@ -87,7 +82,7 @@ public class QuizManager {
 		
 		@Override
 		public Option<Object> handle(JsonNode message) {
-			asker.onReceive(new NextQuestionRequest(teamRoster));
+			asker.nextQuestion(teamRoster);
 			return Option.None();
 		}
 
@@ -123,14 +118,6 @@ public class QuizManager {
 		public Set<String> teams;
 		
 		public TeamListResponse(Set<String> teams) {
-			this.teams = teams;
-		}
-	}
-	
-	public class NextQuestionRequest {
-		public TeamRoster teams;
-		
-		public NextQuestionRequest(TeamRoster teams) {
 			this.teams = teams;
 		}
 	}

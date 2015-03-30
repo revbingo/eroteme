@@ -18,7 +18,7 @@ public class WSControl extends Controller {
 		return WebSocket.whenReady((in,out) -> {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
 			in.onMessage((json) -> {
-				Option<Object> response = quizManager.onReceive(json);
+				Option<Object> response = quizManager.messageReceived(json);
 				writeOption(outSocket, response);
 			});
 			
@@ -28,7 +28,7 @@ public class WSControl extends Controller {
 	}
 	
 	private static Option<Object> registerWithQuizManager(String teamName, JsonWebSocket out) throws Exception {
-		return quizManager.onReceive(new JoinRequest(teamName, out));
+		return quizManager.join(new JoinRequest(teamName, out));
 	}
 	
 	private static void writeOption(JsonWebSocket out, Option<Object> option) {
