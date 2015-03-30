@@ -9,7 +9,6 @@ import play.Logger.ALogger;
 import play.libs.Akka;
 import play.libs.F.Option;
 import play.libs.Json;
-import play.mvc.WebSocket;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
@@ -19,8 +18,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class QuizManager extends UntypedActor {
 
 	private final Map<String, Handler> handlers;
-	private final Map<String, WebSocket.Out<JsonNode>> teams = new HashMap<>();
-	private WebSocket.Out<JsonNode> admin;
+	private final TeamRoster teamRoster = new TeamRoster();
+	private JsonWebSocket admin;
 
 	private ALogger requestLogger = Logger.of("requestLogger");
 
@@ -29,6 +28,7 @@ public class QuizManager extends UntypedActor {
 	public QuizManager() {
 		handlers = new HashMap<>();
 		handlers.put("nextQuestion", new NextQuestionHandler(questionAsker));
+//		handlers.out("answer", new AnswerHandler(questionAsker));
 	}
 
 	@Override
@@ -37,16 +37,16 @@ public class QuizManager extends UntypedActor {
 			JoinRequest join = (JoinRequest) message;
 			if(!join.teamName.isEmpty()) {
 				requestLogger.info("Join:" + join.teamName);
-				teams.put(join.teamName, join.out);
+				teamRoster.put(join.teamName, join.out);
 				sender().tell(Option.Some(new RegistrationResponse()), self());
 				
 				if(admin != null) {
-					admin.write(Json.toJson(new TeamListResponse(teams.keySet())));
+					admin.get().write(Json.toJson(new TeamListResponse(teamRoster.keySet())));
 				}
 			} else {
 				requestLogger.info("Admin");
 				admin = join.out;
-				sender().tell(Option.Some(new TeamListResponse(teams.keySet())), self());
+				sender().tell(Option.Some(new TeamListResponse(teamRoster.keySet())), self());
 			}
 		} else if(message instanceof JsonNode) {
 			JsonNode jsonMessage = (JsonNode) message;
@@ -89,7 +89,7 @@ public class QuizManager extends UntypedActor {
 		
 		@Override
 		public Option<Object> handle(JsonNode message) {
-			actor.tell(new NextQuestionRequest(teams), null);
+			actor.tell(new NextQuestionRequest(teamRoster), null);
 			return Option.None();
 		}
 
@@ -112,9 +112,9 @@ public class QuizManager extends UntypedActor {
 	
 	public static class JoinRequest {
 		public String teamName;
-		public WebSocket.Out<JsonNode> out;
+		public JsonWebSocket out;
 		
-		public JoinRequest(String teamName, WebSocket.Out<JsonNode> out) {
+		public JoinRequest(String teamName, JsonWebSocket out) {
 			this.teamName = teamName;
 			this.out = out;
 		}
@@ -130,9 +130,9 @@ public class QuizManager extends UntypedActor {
 	}
 	
 	public class NextQuestionRequest {
-		public Map<String, WebSocket.Out<JsonNode>> teams;
+		public TeamRoster teams;
 		
-		public NextQuestionRequest(Map<String, WebSocket.Out<JsonNode>> teams) {
+		public NextQuestionRequest(TeamRoster teams) {
 			this.teams = teams;
 		}
 	}

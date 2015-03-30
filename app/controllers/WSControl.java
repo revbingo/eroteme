@@ -1,21 +1,24 @@
 package controllers;
 
 import static akka.pattern.Patterns.ask;
+import static play.libs.Json.toJson;
+
 
 import java.util.concurrent.TimeUnit;
 
+
+import models.JsonWebSocket;
 import models.QuizManager;
 import models.QuizManager.JoinRequest;
-import play.Logger;
 import play.libs.Akka;
 import play.libs.F.Option;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -28,18 +31,24 @@ public class WSControl extends Controller {
 	
 	public static WebSocket<JsonNode> bind(String teamName) {
 		return WebSocket.whenReady((in,out) -> {
+			JsonWebSocket outSocket = new JsonWebSocket(out);
 			in.onMessage((json) -> {
 				Option<Object> response = (Option<Object>) Await.result(ask(quizActor, json, TIMEOUT.toMillis()), TIMEOUT);
 				if(!response.isEmpty()) {
-					out.write(Json.toJson(response.get()));
+					writeOption(outSocket, response);
 				}
 			});
 			
-			out.write(Json.toJson(registerWithQuizManager(teamName, out).get()));
+			Option<Object> response =  registerWithQuizManager(teamName, outSocket);
+			writeOption(outSocket, response);
 		});
 	}
 	
-	private static Option<Object> registerWithQuizManager(String teamName, WebSocket.Out<JsonNode> out) throws Exception {
+	private static Option<Object> registerWithQuizManager(String teamName, JsonWebSocket out) throws Exception {
 		return (Option<Object>) Await.result(ask(quizActor, new JoinRequest(teamName, out), TIMEOUT.toMillis()), TIMEOUT);
+	}
+	
+	private static void writeOption(JsonWebSocket out, Option<Object> option) {
+		out.write(toJson(option.get()));
 	}
 }

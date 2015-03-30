@@ -3,6 +3,7 @@ package models.questions;
 public class SimpleQuestion extends Question {
 
 	private String answer;
+	private AnswerType answerType = AnswerType.SIMPLE;
 	
 	public SimpleQuestion(String question, String answer) {
 		super(question);
@@ -14,4 +15,7 @@ public class SimpleQuestion extends Question {
 		return answer.equalsIgnoreCase(this.answer);
 	}
 
+	public AnswerType getAnswerType() {
+		return answerType;
+	}
 }

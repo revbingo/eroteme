@@ -1,7 +1,10 @@
 package models.questions;
 
 public abstract class Question {
-
+	public enum AnswerType {
+		SIMPLE
+	}
+	
 	private String question;
 	
 	public Question(String question) {
