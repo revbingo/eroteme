@@ -1,26 +1,56 @@
 require(["jquery", "bootstrap"], function ($) {
-	var socket = register();
+	var view = new View();
+	var controller = new Controller(view);
+	view.setController(controller);
 	
-	function register() {
-		var socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind?teamName=" + teamName);
-		return socket;	
-	}
-	
-	socket.onmessage = function(event) {
-		$("#state").html(event.data);
+	function Controller(view) {
+		this.socket = register();
+		this.view = view;
+		var this_ = this;
 		
-		var json = JSON.parse(event.data);
-		if(json.answerType == "SIMPLE") {
+		function register() {
+			var socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind?teamName=" + teamName);
+			return socket;
+		}
+		
+		this.socket.onmessage = function(event) {
+			var json = JSON.parse(event.data);
+			this_.view.debug(json);
+			
+			if(json.answerType) {
+				this_.view[json.answerType](json);
+			}
+		}
+		
+		this.socket.onclose = function(event) {
+			this_.socket = register();
+		}
+		
+		this.sendAnswer = function(questionNumber, answer) {
+			this_.socket.send(JSON.stringify(new Answer(questionNumber, answer)));
+		}
+		
+	}
+		
+	function View() {
+		
+		this.controller = null;
+		var this_ = this;
+		
+		this.setController = function(controller) {
+			this_.controller = controller;
+		}
+				
+		this.SIMPLE = function(json) {
 			$("#answerArea").html('<input type="text" id="answer"></input><button id="submitAnswer">Go!</button>');
 			$("#submitAnswer").click(function() {
-				socket.send(JSON.stringify(new Answer(json.questionNumber, $("#answer").val())));
+				controller.sendAnswer(json.questionNumber, $("#answer").val());
 			})
 		}
-	}
-	
-	socket.onclose = function(event) {
-		alert("lost connection - reregistering");
-		socket = register();
+		
+		this.debug = function(data) {
+			$("#state").html(JSON.stringify(data));
+		}
 	}
 	
 	function Answer(questionNumber, answer) {
