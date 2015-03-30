@@ -1,6 +1,5 @@
 package models;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class QuestionAsker {
 	public Question nextQuestion(TeamRoster teams) {
 		Logger.debug("Next question!");
 		questionCount++;
-		Question question = new SimpleQuestion(questionCount, "What time is it? " + LocalDateTime.now().toString(), "now");
+		Question question = new SimpleQuestion(questionCount, "What time is it?", "now");
 		questions.add(question);
 		return question;
 	}
