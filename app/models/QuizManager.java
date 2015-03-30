@@ -15,7 +15,7 @@ import akka.actor.UntypedActor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class QuizManager extends UntypedActor {
+public class QuizManager {
 
 	private final Map<String, Handler> handlers;
 	private final TeamRoster teamRoster = new TeamRoster();
@@ -31,34 +31,32 @@ public class QuizManager extends UntypedActor {
 //		handlers.out("answer", new AnswerHandler(questionAsker));
 	}
 
-	@Override
-	public void onReceive(Object message) throws Exception {
+	public Option<Object> onReceive(Object message) throws Exception {
 		if(message instanceof JoinRequest) {
 			JoinRequest join = (JoinRequest) message;
 			if(!join.teamName.isEmpty()) {
 				requestLogger.info("Join:" + join.teamName);
 				teamRoster.put(join.teamName, join.out);
-				sender().tell(Option.Some(new RegistrationResponse()), self());
 				
 				if(admin != null) {
 					admin.get().write(Json.toJson(new TeamListResponse(teamRoster.keySet())));
 				}
+				return Option.Some(new RegistrationResponse());
 			} else {
 				requestLogger.info("Admin");
 				admin = join.out;
-				sender().tell(Option.Some(new TeamListResponse(teamRoster.keySet())), self());
+				return Option.Some(new TeamListResponse(teamRoster.keySet()));
 			}
 		} else if(message instanceof JsonNode) {
 			JsonNode jsonMessage = (JsonNode) message;
 			requestLogger.info("Json:" + Json.stringify(jsonMessage));
 			Handler handler = getHandlerForMessage(jsonMessage);
-			Object response = handler.handle(jsonMessage);
+			Option<Object> response = handler.handle(jsonMessage);
 			
-			sender().tell(response, self());
-			
+			return response;
 		} else {
 			requestLogger.error("Invalid: " + message.getClass().getCanonicalName());
-			sender().tell(Option.None(), self());
+			return Option.None();
 		}
 	}
 
@@ -81,15 +79,15 @@ public class QuizManager extends UntypedActor {
 	
 	public class NextQuestionHandler implements Handler {
 
-		private ActorRef actor;
+		private QuestionAsker asker;
 		
-		public NextQuestionHandler(ActorRef actor) {
-			this.actor = actor;
+		public NextQuestionHandler(QuestionAsker asker) {
+			this.asker = asker;
 		}
 		
 		@Override
 		public Option<Object> handle(JsonNode message) {
-			actor.tell(new NextQuestionRequest(teamRoster), null);
+			asker.onReceive(new NextQuestionRequest(teamRoster));
 			return Option.None();
 		}
 

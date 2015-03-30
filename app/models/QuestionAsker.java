@@ -6,12 +6,10 @@ import models.QuizManager.NextQuestionRequest;
 import models.questions.SimpleQuestion;
 import play.Logger;
 import play.libs.Json;
-import akka.actor.UntypedActor;
 
-public class QuestionAsker extends UntypedActor {
+public class QuestionAsker {
 
-	@Override
-	public void onReceive(Object nextQuestionRequest) throws Exception {
+	public void onReceive(Object nextQuestionRequest) {
 		NextQuestionRequest request = (NextQuestionRequest) nextQuestionRequest;
 		Logger.debug("Next question!");
 		request.teams.forEach((name, out) -> {
