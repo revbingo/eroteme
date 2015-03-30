@@ -26,10 +26,10 @@ public class QuizManager {
 		handlers.put("nextQuestion", new NextQuestionHandler(questionAsker));
 	}
 
-	public Option<Object> join(JoinRequest join) {
-		if(!join.teamName.isEmpty()) {
-			requestLogger.info("Join:" + join.teamName);
-			teamRoster.put(join.teamName, join.out);
+	public Option<Object> join(String teamName, JsonWebSocket out) {
+		if(!teamName.isEmpty()) {
+			requestLogger.info("Join:" + teamName);
+			teamRoster.put(teamName, out);
 			
 			if(admin != null) {
 				admin.get().write(Json.toJson(new TeamListResponse(teamRoster.keySet())));
@@ -37,7 +37,7 @@ public class QuizManager {
 			return Option.Some(new RegistrationResponse());
 		} else {
 			requestLogger.info("Admin");
-			admin = join.out;
+			admin = out;
 			return Option.Some(new TeamListResponse(teamRoster.keySet()));
 		}
 	}
@@ -103,16 +103,6 @@ public class QuizManager {
 		}
 	}
 	
-	public static class JoinRequest {
-		public String teamName;
-		public JsonWebSocket out;
-		
-		public JoinRequest(String teamName, JsonWebSocket out) {
-			this.teamName = teamName;
-			this.out = out;
-		}
-	}
-	
 	public class TeamListResponse {
 		public String type = "teamList";
 		public Set<String> teams;
@@ -120,5 +110,10 @@ public class QuizManager {
 		public TeamListResponse(Set<String> teams) {
 			this.teams = teams;
 		}
+	}
+
+	public void remove(String teamName) {
+		teamRoster.remove(teamName);
+		admin.write(Json.toJson(new TeamListResponse(teamRoster.keySet())));
 	}
 }
