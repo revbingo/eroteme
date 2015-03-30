@@ -6,5 +6,5 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface Handler {
 
-	public Option<Object> handle(JsonNode message);
+	public Option<Object> handle(String teamName, JsonNode message);
 }

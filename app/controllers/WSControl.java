@@ -22,7 +22,7 @@ public class WSControl extends Controller {
 			});
 			
 			in.onMessage((json) -> {
-				Option<Object> response = quizManager.messageReceived(json);
+				Option<Object> response = quizManager.messageReceived(teamName, json);
 				writeOption(outSocket, response);
 			});
 			

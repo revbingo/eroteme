@@ -13,18 +13,19 @@ require(["jquery", "bootstrap"], function ($) {
 		if(json.answerType == "SIMPLE") {
 			$("#answerArea").html('<input type="text" id="answer"></input><button id="submitAnswer">Go!</button>');
 			$("#submitAnswer").click(function() {
-				socket.send(JSON.stringify(new Answer($("#answer").val())));
+				socket.send(JSON.stringify(new Answer(json.questionNumber, $("#answer").val())));
 			})
 		}
-	}	
+	}
 	
 	socket.onclose = function(event) {
 		alert("lost connection - reregistering");
 		socket = register();
 	}
 	
-	function Answer(answer) {
+	function Answer(questionNumber, answer) {
 		this.answer = answer;
+		this.questionNumber = questionNumber;
 		this.type = "answer";
 	}
 });
