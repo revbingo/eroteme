@@ -23,7 +23,7 @@ public class Team {
 		return score;
 	}
 	
-	public void score() {
+	public void scored() {
 		this.score++;
 	}	
 	

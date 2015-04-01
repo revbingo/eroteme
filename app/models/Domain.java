@@ -7,10 +7,12 @@ import models.questions.Question;
 public class Domain {
 	public static class QuestionAnswerResponse {
 		public boolean correct;
+		public int score;
 		public String type = "answerResponse";
 		
-		public QuestionAnswerResponse(boolean correct) {
+		public QuestionAnswerResponse(boolean correct, int score) {
 			this.correct = correct;
+			this.score = score;
 		}
 	}
 	
