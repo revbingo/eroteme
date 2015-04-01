@@ -27,28 +27,28 @@ public class QuizMaster {
 	}
 
 	public void join(String teamName, JsonWebSocket out) {
-		if(!teamName.isEmpty()) {
-			requestLogger.info("Join:" + teamName);
-			Team theTeam = new Team(teamName, out);
-			teamRoster.put(teamName, theTeam);
-			theTeam.notify(Option.Some(new Domain.RegistrationResponse()));
-			admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
-		} else {
-			Logger.debug("New admin joined");
-			requestLogger.info("Admin");
-			admin.destroy();
-			admin = new Admin(out);
-		}
+		requestLogger.info("Join:" + teamName);
+		Team theTeam = new Team(teamName, out);
+		teamRoster.put(teamName, theTeam);
+		theTeam.notify(Option.Some(new Domain.RegistrationResponse()));
+		admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
+	}
+	
+	public void registerAdmin(JsonWebSocket outSocket) {
+		Logger.debug("New admin joined");
+		requestLogger.info("Admin");
+		admin.destroy();
+		admin = new Admin(outSocket);
+	}
+	
+	public void deregisterAdmin() {
+		admin = new Admin(null);
 	}
 	
 	public void leave(String teamName) {
 		requestLogger.info("Leave:" + teamName);
-		if(!teamName.isEmpty()) {
-			teamRoster.remove(teamName);
-			admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
-		} else {
-			admin = new Admin(null);
-		}
+		teamRoster.remove(teamName);
+		admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
 	}
 	
 	public void messageReceived(String teamName, JsonNode message) throws Exception {
@@ -86,5 +86,5 @@ public class QuizMaster {
 	public TeamRoster getTeamRoster() {
 		return teamRoster;
 	}
-	
+
 }

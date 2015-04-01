@@ -4,7 +4,7 @@ require(["jquery", "bootstrap"], function($){
 	view.setController(controller);
 	
 	function Controller(view) {
-		this.socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind?teamName=");
+		this.socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bindAdmin");
 		this.view = view;
 		var this_ = this;
 		

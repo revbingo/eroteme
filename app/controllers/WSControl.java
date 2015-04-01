@@ -27,4 +27,20 @@ public class WSControl extends Controller {
 			
 		});
 	}
+	
+	public static WebSocket<JsonNode> bindAdmin() {
+		return WebSocket.whenReady((in,out) -> {
+			JsonWebSocket outSocket = new JsonWebSocket(out);
+			
+			quizMaster.registerAdmin(outSocket);
+			
+			in.onClose(() -> {
+				quizMaster.deregisterAdmin();
+			});
+			
+			in.onMessage((json) -> {
+				quizMaster.messageReceived("admin", json);
+			});
+		});
+	}
 }
