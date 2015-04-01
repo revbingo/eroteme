@@ -1,9 +1,7 @@
 package controllers;
 
-import static play.libs.Json.toJson;
 import models.JsonWebSocket;
 import models.QuizMaster;
-import play.libs.F.Option;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 
@@ -17,6 +15,8 @@ public class WSControl extends Controller {
 		return WebSocket.whenReady((in,out) -> {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
 			
+			quizMaster.join(teamName, outSocket);
+			
 			in.onClose(() -> {
 				quizMaster.leave(teamName);
 			});
@@ -25,14 +25,6 @@ public class WSControl extends Controller {
 				quizMaster.messageReceived(teamName, json);
 			});
 			
-			Option<Object> response = quizMaster.join(teamName, outSocket);
-			writeOption(outSocket, response);
 		});
-	}
-	
-	private static void writeOption(JsonWebSocket out, Option<Object> option) {
-		if(!option.isEmpty()) {
-			out.write(toJson(option.get()));
-		}
 	}
 }

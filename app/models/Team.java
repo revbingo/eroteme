@@ -2,7 +2,6 @@ package models;
 
 import play.libs.F.Option;
 import play.libs.Json;
-import views.html.main;
 
 public class Team {
 

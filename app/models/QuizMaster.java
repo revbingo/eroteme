@@ -3,7 +3,6 @@ package models;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.Domain.QuestionAnswerResponse;
 import play.Logger;
 import play.Logger.ALogger;
 import play.libs.F.Option;
@@ -27,14 +26,13 @@ public class QuizMaster {
 		handlers.put("answer", new AnswerQuestionHandler(this, questionAsker));
 	}
 
-	public Option<Object> join(String teamName, JsonWebSocket out) {
+	public void join(String teamName, JsonWebSocket out) {
 		Option<Object> response = Option.None();
 		if(!teamName.isEmpty()) {
 			requestLogger.info("Join:" + teamName);
 			Team theTeam = new Team(teamName, out);
 			teamRoster.put(teamName, theTeam);
-			
-			response = Option.Some(new Domain.RegistrationResponse());
+			theTeam.notify(Option.Some(new Domain.RegistrationResponse()));
 		} else {
 			Logger.debug("New admin joined");
 			requestLogger.info("Admin");
@@ -43,8 +41,6 @@ public class QuizMaster {
 		}
 		
 		admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
-		
-		return response;
 	}
 	
 	public void leave(String teamName) {
