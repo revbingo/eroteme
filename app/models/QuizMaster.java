@@ -31,14 +31,14 @@ public class QuizMaster {
 		Team theTeam = new Team(teamName, out);
 		teamRoster.put(teamName, theTeam);
 		theTeam.notify(Option.Some(new Domain.RegistrationResponse()));
-		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
+		notifyAdmin();
 	}
 	
 	public void registerAdmin(JsonWebSocket outSocket) {
 		requestLogger.info("Admin join");
 		admin.destroy();
 		admin = new Admin(outSocket);
-		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
+		notifyAdmin();
 	}
 	
 	public void deregisterAdmin() {
@@ -49,7 +49,7 @@ public class QuizMaster {
 	public void leave(String teamName) {
 		requestLogger.info("Leave:" + teamName);
 		teamRoster.remove(teamName);
-		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
+		notifyAdmin();
 	}
 	
 	public void messageReceived(String teamName, JsonNode message) throws Exception {
@@ -73,7 +73,7 @@ public class QuizMaster {
 		Team team = teamRoster.get(teamName);
 		if(team != null) {
 			team.score();
-			admin.notify(new Domain.TeamListResponse(teamRoster.values()));
+			notifyAdmin();
 		}
 	}
 	
@@ -81,6 +81,10 @@ public class QuizMaster {
 		getTeamRoster().forEach((name, team) -> {
 			team.notify(obj);
 		});
+	}
+	
+	public void notifyAdmin() {
+		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
 	}
 	
 	public TeamRoster getTeamRoster() {
