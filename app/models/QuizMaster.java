@@ -3,6 +3,7 @@ package models;
 import java.util.HashMap;
 import java.util.Map;
 
+import models.Domain.QuestionAnswerResponse;
 import play.Logger;
 import play.Logger.ALogger;
 import play.libs.F.Option;
@@ -35,8 +36,9 @@ public class QuizMaster {
 			
 			response = Option.Some(new Domain.RegistrationResponse());
 		} else {
-			Logger.debug("admin joined");
+			Logger.debug("New admin joined");
 			requestLogger.info("Admin");
+			admin.destroy();
 			admin = new Admin(out);
 		}
 		
@@ -46,30 +48,35 @@ public class QuizMaster {
 	}
 	
 	public void leave(String teamName) {
+		requestLogger.info("Leave:" + teamName);
 		if(!teamName.isEmpty()) {
 			teamRoster.remove(teamName);
-				admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
+			admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
 		} else {
 			admin = new Admin(null);
 		}
 	}
 	
-	public Option<Object> messageReceived(String teamName, JsonNode message) throws Exception {
+	public void messageReceived(String teamName, JsonNode message) throws Exception {
 		JsonNode jsonMessage = (JsonNode) message;
 		requestLogger.info("Json:" + Json.stringify(jsonMessage));
 		Handler handler = getHandlerForMessage(jsonMessage).getOrElse(new NullHandler());
-		Option<Object> response = handler.handle(teamName, jsonMessage);
-		
-		return response;
+		handler.handle(teamName, jsonMessage);
 	}
 
+	public void notifyTeam(String teamName, Option<Object> response) {
+		Team team = teamRoster.getOrDefault(teamName, Team.nil());
+		if(!response.isEmpty()) {
+			team.notify(response);
+		}
+	}
+	
 	public void score(String teamName) {
 		Team team = teamRoster.get(teamName);
 		if(team != null) team.score();
-
 	}
 	
-	public void notifyTeams(Object obj) {
+	public void notifyTeams(Option<Object> obj) {
 		getTeamRoster().forEach((name, team) -> {
 			team.notify(obj);
 		});

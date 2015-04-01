@@ -1,7 +1,6 @@
 package models;
 
 import models.questions.Question;
-import play.libs.Json;
 import play.libs.F.Option;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,10 +16,8 @@ public class NextQuestionHandler implements Handler {
 	}
 	
 	@Override
-	public Option<Object> handle(String teamName, JsonNode message) {
+	public void handle(String teamName, JsonNode message) {
 		Question question = asker.nextQuestion(quizMaster.getTeamRoster());
-		quizMaster.notifyTeams(question);
-		return Option.Some(question);
+		quizMaster.notifyTeams(Option.Some(question));
 	}
-
 }

@@ -17,15 +17,17 @@ public class AnswerQuestionHandler implements Handler {
 	}
 	
 	@Override
-	public Option<Object> handle(String teamName, JsonNode message) {
+	public void handle(String teamName, JsonNode message) {
 		boolean correct = false;
 		try {
 			correct = asker.answer(message.get("questionNumber").asInt(), message.get("answer").asText());
 			Logger.debug(teamName + " got the answer " + correct);
-			quizMaster.score(teamName);
+			if(correct) {
+				quizMaster.score(teamName);
+			}
+			quizMaster.notifyTeam(teamName, Option.Some(new QuestionAnswerResponse(correct)));
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		return Option.Some(new QuestionAnswerResponse(correct));
 	}
 }

@@ -22,8 +22,7 @@ public class WSControl extends Controller {
 			});
 			
 			in.onMessage((json) -> {
-				Option<Object> response = quizMaster.messageReceived(teamName, json);
-				writeOption(outSocket, response);
+				quizMaster.messageReceived(teamName, json);
 			});
 			
 			Option<Object> response = quizMaster.join(teamName, outSocket);

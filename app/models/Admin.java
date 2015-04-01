@@ -15,4 +15,10 @@ public class Admin {
 			out.write(Json.toJson(obj));
 		}
 	}
+	
+	public void destroy() {
+		if(out != null) {
+			out.close();
+		}
+	}
 }

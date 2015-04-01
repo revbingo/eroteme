@@ -19,5 +19,9 @@ public class JsonWebSocket {
 	public void write(JsonNode json) {
 		wrapped.write(json);
 	}
+	
+	public void close() {
+		wrapped.close();
+	}
 }
 

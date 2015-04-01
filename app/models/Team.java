@@ -1,6 +1,8 @@
 package models;
 
+import play.libs.F.Option;
 import play.libs.Json;
+import views.html.main;
 
 public class Team {
 
@@ -14,20 +16,8 @@ public class Team {
 		this.out = out;
 	}
 
-	public JsonWebSocket getOut() {
-		return out;
-	}
-
-	public void setOut(JsonWebSocket out) {
-		this.out = out;
-	}
-
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public int getScore() {
@@ -38,7 +28,13 @@ public class Team {
 		this.score++;
 	}	
 	
-	public void notify(Object obj) {
-		out.write(Json.toJson(obj));
+	public void notify(Option<Object> obj) {
+		if(out != null && !obj.isEmpty()) {
+			out.write(Json.toJson(obj));
+		}
 	}
+
+	public static Team nil() {
+		return new Team(null, null);
+	}	
 }
