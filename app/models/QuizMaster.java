@@ -63,7 +63,7 @@ public class QuizMaster {
 
 	public void notifyTeam(String teamName, Option<Object> response) {
 		Team team = teamRoster.getOrDefault(teamName, Team.nil());
-		if(!response.isEmpty()) {
+		if(response.isDefined()) {
 			team.notify(response);
 		}
 	}
