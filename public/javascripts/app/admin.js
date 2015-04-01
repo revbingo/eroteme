@@ -18,7 +18,6 @@ require(["jquery", "bootstrap"], function($){
 		this.nextQuestion = function() {
 			this_.socket.send(JSON.stringify(new NextQuestion()));
 		}
-		
 	}
 	
 	function View(controller, model) {

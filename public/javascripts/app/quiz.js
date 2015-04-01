@@ -1,11 +1,10 @@
 require(["jquery", "bootstrap"], function ($) {
-	var view = new View();
-	var controller = new Controller(view);
-	view.setController(controller);
+	var controller = new Controller();
 	
 	function Controller(view) {
 		this.socket = register();
-		this.view = view;
+		this.model = new Model();
+		this.view = new View(this, this.model);
 		var this_ = this;
 		
 		function register() {
@@ -19,7 +18,8 @@ require(["jquery", "bootstrap"], function ($) {
 					this_.view.displayAnswer(json);
 				}
 				if(json.answerType) {
-					this_.view.displayQuestion(json);
+					this_.model.nextQuestion(json);
+					this_.view.displayQuestion();
 					this_.view[json.answerType](json);
 				}
 			}
@@ -33,21 +33,17 @@ require(["jquery", "bootstrap"], function ($) {
 		this.sendAnswer = function(questionNumber, answer) {
 			this_.socket.send(JSON.stringify(new Answer(questionNumber, answer)));
 		}
-		
 	}
 		
-	function View() {
+	function View(controller, model) {
 		
-		this.controller = null;
+		this.controller = controller;
+		this.model = model;
 		var this_ = this;
 		
-		this.setController = function(controller) {
-			this_.controller = controller;
-		}
-				
-		this.displayQuestion = function(json) {
+		this.displayQuestion = function() {
 			$("#questionArea").css("color", "white");
-			$("#questionArea").html(json.questionNumber + ": " + json.question);
+			$("#questionArea").html(this_.model.currentQuestion.questionNumber + ": " + this_.model.currentQuestion.question);
 		}
 		
 		this.displayAnswer = function(json) {
@@ -64,6 +60,14 @@ require(["jquery", "bootstrap"], function ($) {
 		
 		this.debug = function(data) {
 			$("#state").html(JSON.stringify(data));
+		}
+	}
+
+	function Model() {
+		this.currentQuestion = {};
+		
+		this.nextQuestion = function(question) {
+			this.currentQuestion = question;
 		}
 	}
 	
