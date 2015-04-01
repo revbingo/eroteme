@@ -17,7 +17,7 @@ public class NextQuestionHandler implements Handler {
 	
 	@Override
 	public void handle(String teamName, JsonNode message) {
-		Question question = asker.nextQuestion(quizMaster.getTeamRoster());
+		Question question = asker.nextQuestion();
 		quizMaster.notifyTeams(Option.Some(question));
 	}
 }
