@@ -70,7 +70,10 @@ public class QuizMaster {
 	
 	public void score(String teamName) {
 		Team team = teamRoster.get(teamName);
-		if(team != null) team.score();
+		if(team != null) {
+			team.score();
+			admin.notify(new Domain.TeamListResponse(teamRoster.values()));
+		}
 	}
 	
 	public void notifyTeams(Option<Object> obj) {
