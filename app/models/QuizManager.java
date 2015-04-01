@@ -106,6 +106,7 @@ public class QuizManager {
 			try {
 				correct = asker.answer(message.get("questionNumber").asInt(), message.get("answer").asText());
 				Logger.debug(teamName + " got the answer " + correct);
+				teamRoster.get(teamName).score();
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}

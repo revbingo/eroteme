@@ -31,8 +31,8 @@ public class Team {
 	public int getScore() {
 		return score;
 	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
+	
+	public void score() {
+		this.score++;
+	}	
 }
