@@ -27,20 +27,18 @@ public class QuizMaster {
 	}
 
 	public void join(String teamName, JsonWebSocket out) {
-		Option<Object> response = Option.None();
 		if(!teamName.isEmpty()) {
 			requestLogger.info("Join:" + teamName);
 			Team theTeam = new Team(teamName, out);
 			teamRoster.put(teamName, theTeam);
 			theTeam.notify(Option.Some(new Domain.RegistrationResponse()));
+			admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
 		} else {
 			Logger.debug("New admin joined");
 			requestLogger.info("Admin");
 			admin.destroy();
 			admin = new Admin(out);
 		}
-		
-		admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
 	}
 	
 	public void leave(String teamName) {

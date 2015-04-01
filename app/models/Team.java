@@ -35,5 +35,5 @@ public class Team {
 
 	public static Team nil() {
 		return new Team(null, null);
-	}	
+	}
 }
