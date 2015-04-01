@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.Set;
 
 import models.questions.Question;
@@ -31,9 +32,9 @@ public class Domain {
 	
 	public static class TeamListResponse {
 		public String type = "teamList";
-		public Set<String> teams;
+		public Collection<Team> teams;
 		
-		public TeamListResponse(Set<String> teams) {
+		public TeamListResponse(Collection<Team> teams) {
 			this.teams = teams;
 		}
 	}

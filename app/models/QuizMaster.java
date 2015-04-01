@@ -31,7 +31,7 @@ public class QuizMaster {
 		Team theTeam = new Team(teamName, out);
 		teamRoster.put(teamName, theTeam);
 		theTeam.notify(Option.Some(new Domain.RegistrationResponse()));
-		admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
+		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
 	}
 	
 	public void registerAdmin(JsonWebSocket outSocket) {
@@ -48,7 +48,7 @@ public class QuizMaster {
 	public void leave(String teamName) {
 		requestLogger.info("Leave:" + teamName);
 		teamRoster.remove(teamName);
-		admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
+		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
 	}
 	
 	public void messageReceived(String teamName, JsonNode message) throws Exception {
@@ -82,5 +82,4 @@ public class QuizMaster {
 	public TeamRoster getTeamRoster() {
 		return teamRoster;
 	}
-
 }
