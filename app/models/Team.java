@@ -1,5 +1,7 @@
 package models;
 
+import play.libs.Json;
+
 public class Team {
 
 	private JsonWebSocket out;
@@ -35,4 +37,8 @@ public class Team {
 	public void score() {
 		this.score++;
 	}	
+	
+	public void notify(Object obj) {
+		out.write(Json.toJson(obj));
+	}
 }

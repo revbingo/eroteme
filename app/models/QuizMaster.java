@@ -14,7 +14,7 @@ public class QuizMaster {
 
 	private final Map<String, Handler> handlers;
 	private final TeamRoster teamRoster = new TeamRoster();
-	private Admin admin;
+	private Admin admin = new Admin(null);
 
 	private ALogger requestLogger = Logger.of("requestLogger");
 
@@ -40,9 +40,7 @@ public class QuizMaster {
 			admin = new Admin(out);
 		}
 		
-		if(admin != null) {
-			admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
-		}
+		admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
 		
 		return response;
 	}
@@ -50,11 +48,9 @@ public class QuizMaster {
 	public void leave(String teamName) {
 		if(!teamName.isEmpty()) {
 			teamRoster.remove(teamName);
-			if(admin != null) {
 				admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
-			}
 		} else {
-			admin = null;
+			admin = new Admin(null);
 		}
 	}
 	
@@ -75,7 +71,7 @@ public class QuizMaster {
 	
 	public void notifyTeams(Object obj) {
 		getTeamRoster().forEach((name, team) -> {
-			team.getOut().write(Json.toJson(obj));
+			team.notify(obj);
 		});
 	}
 	

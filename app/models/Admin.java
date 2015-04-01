@@ -11,6 +11,8 @@ public class Admin {
 	}
 	
 	public void notify(Object obj) {
-		out.write(Json.toJson(obj));
+		if(out != null) {
+			out.write(Json.toJson(obj));
+		}
 	}
 }
