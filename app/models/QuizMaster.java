@@ -54,7 +54,10 @@ public class QuizMaster {
 	public void messageReceived(String teamName, JsonNode message) throws Exception {
 		JsonNode jsonMessage = (JsonNode) message;
 		requestLogger.info("Json:" + Json.stringify(jsonMessage));
-		Handler handler = getHandlerForMessage(jsonMessage).getOrElse(new NullHandler());
+		
+		String type = jsonMessage.get("type").asText();
+		Handler handler = handlers.getOrDefault(type, new NullHandler());
+
 		handler.handle(teamName, jsonMessage);
 	}
 
@@ -76,13 +79,6 @@ public class QuizMaster {
 		});
 	}
 	
-	private Option<Handler> getHandlerForMessage(JsonNode jsonMessage) {
-		String type = jsonMessage.get("type").asText();
-		
-		Handler handler = handlers.get(type);
-		return Option.Some(handler);
-	}
-
 	public TeamRoster getTeamRoster() {
 		return teamRoster;
 	}
