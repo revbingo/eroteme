@@ -38,6 +38,7 @@ public class QuizMaster {
 		requestLogger.info("Admin join");
 		admin.destroy();
 		admin = new Admin(outSocket);
+		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
 	}
 	
 	public void deregisterAdmin() {
