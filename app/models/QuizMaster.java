@@ -35,13 +35,13 @@ public class QuizMaster {
 	}
 	
 	public void registerAdmin(JsonWebSocket outSocket) {
-		Logger.debug("New admin joined");
-		requestLogger.info("Admin");
+		requestLogger.info("Admin join");
 		admin.destroy();
 		admin = new Admin(outSocket);
 	}
 	
 	public void deregisterAdmin() {
+		requestLogger.info("Admin leave");
 		admin = new Admin(null);
 	}
 	
