@@ -29,7 +29,7 @@ public class Team {
 	
 	public void notify(Option<Object> obj) {
 		if(out != null && !obj.isEmpty()) {
-			out.write(Json.toJson(obj));
+			out.write(Json.toJson(obj.get()));
 		}
 	}
 
