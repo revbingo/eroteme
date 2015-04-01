@@ -1,8 +1,8 @@
 requirejs.config({
-	baseUrl: 'assets/javascripts/app',
+	baseUrl: 'assets/javascripts',
     paths: {
-        bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min",
-        jquery: "//code.jquery.com/jquery-1.11.2.min"
+        bootstrap: "bootstrap.min",
+        jquery: "jquery-1.11.2.min"
     },
     shim: {
         bootstrap: {
