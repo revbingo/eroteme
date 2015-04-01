@@ -31,7 +31,7 @@ require(["jquery", "bootstrap"], function($){
 		this.displayTeamList = function(teams) {
 			$("#teams").html("");
 			teams.forEach(function(team) {
-				$("#teams").append($("<li />").html(team));
+				$("#teams").append($("<li />").addClass("list-group-item").html(team));
 			})
 		}
 		

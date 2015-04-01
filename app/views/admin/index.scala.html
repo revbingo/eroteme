@@ -1,7 +1,7 @@
-@main("qu.est.io/ns admin", "admin") {
+@main("qu.est.io/ns admin", "app/admin", routes.Assets.at("stylesheets/cover.css").toString) {
 
 	<h1>Teams:</h1>
-	<ul id="teams">
+	<ul class="list-group" id="teams">
 	</ul>	
 	<a href="#" id="nextQuestion">Next Question</a>
 }
