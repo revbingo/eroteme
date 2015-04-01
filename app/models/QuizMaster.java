@@ -44,6 +44,17 @@ public class QuizMaster {
 		}
 	}
 	
+	public void leave(String teamName) {
+		if(!teamName.isEmpty()) {
+			teamRoster.remove(teamName);
+			if(admin != null) {
+				admin.write(Json.toJson(new Domain.TeamListResponse(teamRoster.keySet())));
+			}
+		} else {
+			admin = null;
+		}
+	}
+	
 	public Option<Object> messageReceived(String teamName, JsonNode message) throws Exception {
 		JsonNode jsonMessage = (JsonNode) message;
 		requestLogger.info("Json:" + Json.stringify(jsonMessage));
@@ -76,14 +87,4 @@ public class QuizMaster {
 		return teamRoster;
 	}
 	
-	public void remove(String teamName) {
-		if(!teamName.isEmpty()) {
-			teamRoster.remove(teamName);
-			if(admin != null) {
-				admin.write(Json.toJson(new Domain.TeamListResponse(teamRoster.keySet())));
-			}
-		} else {
-			admin = null;
-		}
-	}
 }

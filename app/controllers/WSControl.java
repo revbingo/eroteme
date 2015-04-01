@@ -18,7 +18,7 @@ public class WSControl extends Controller {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
 			
 			in.onClose(() -> {
-				quizMaster.remove(teamName);
+				quizMaster.leave(teamName);
 			});
 			
 			in.onMessage((json) -> {
