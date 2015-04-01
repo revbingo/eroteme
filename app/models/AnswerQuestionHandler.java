@@ -1,7 +1,6 @@
 package models;
 
 import models.Domain.QuestionAnswerResponse;
-import play.Logger;
 import play.libs.F.Option;
 
 import com.fasterxml.jackson.databind.JsonNode;
