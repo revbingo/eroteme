@@ -58,22 +58,14 @@ public class QuizMaster {
 		
 		String type = jsonMessage.get("type").asText();
 		Handler handler = handlers.getOrDefault(type, new NullHandler());
-
-		handler.handle(teamName, jsonMessage);
+		Team team = teamRoster.getOrDefault(teamName, Team.nil());
+		
+		handler.handle(team, jsonMessage);
 	}
 
-	public void notifyTeam(String teamName, Option<Object> response) {
-		Team team = teamRoster.getOrDefault(teamName, Team.nil());
+	public void notifyTeam(Team team, Option<Object> response) {
 		if(response.isDefined()) {
 			team.notify(response);
-		}
-	}
-	
-	public void score(String teamName) {
-		Team team = teamRoster.get(teamName);
-		if(team != null) {
-			team.score();
-			notifyAdmin();
 		}
 	}
 	

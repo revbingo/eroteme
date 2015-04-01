@@ -4,5 +4,5 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface Handler {
 
-	public void handle(String teamName, JsonNode message);
+	public void handle(Team team, JsonNode message);
 }
