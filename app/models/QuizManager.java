@@ -31,7 +31,8 @@ public class QuizManager {
 	public Option<Object> join(String teamName, JsonWebSocket out) {
 		if(!teamName.isEmpty()) {
 			requestLogger.info("Join:" + teamName);
-			teamRoster.put(teamName, out);
+			Team theTeam = new Team(teamName, out);
+			teamRoster.put(teamName, theTeam);
 			
 			if(admin != null) {
 				admin.get().write(Json.toJson(new TeamListResponse(teamRoster.keySet())));
@@ -81,9 +82,9 @@ public class QuizManager {
 		public Option<Object> handle(String teamName, JsonNode message) {
 			Logger.debug("asking the asker");
 			Question question = asker.nextQuestion(teamRoster);
-			teamRoster.forEach((name, out) -> {
+			teamRoster.forEach((name, team) -> {
 				Logger.debug("askign " + name);
-				out.write(Json.toJson(question));
+				team.getOut().write(Json.toJson(question));
 			});
 			Logger.debug("Asked a question");
 			return Option.Some(question);
