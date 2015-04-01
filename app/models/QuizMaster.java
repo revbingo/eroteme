@@ -53,6 +53,18 @@ public class QuizMaster {
 		return response;
 	}
 
+	public void score(String teamName) {
+		Team team = teamRoster.get(teamName);
+		if(team != null) team.score();
+
+	}
+	
+	public void notifyTeams(Object obj) {
+		getTeamRoster().forEach((name, team) -> {
+			team.getOut().write(Json.toJson(obj));
+		});
+	}
+	
 	private Option<Handler> getHandlerForMessage(JsonNode jsonMessage) {
 		String type = jsonMessage.get("type").asText();
 		

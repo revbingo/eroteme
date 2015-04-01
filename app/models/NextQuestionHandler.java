@@ -19,9 +19,7 @@ public class NextQuestionHandler implements Handler {
 	@Override
 	public Option<Object> handle(String teamName, JsonNode message) {
 		Question question = asker.nextQuestion(quizMaster.getTeamRoster());
-		quizMaster.getTeamRoster().forEach((name, team) -> {
-			team.getOut().write(Json.toJson(question));
-		});
+		quizMaster.notifyTeams(question);
 		return Option.Some(question);
 	}
 
