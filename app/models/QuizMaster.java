@@ -14,7 +14,7 @@ public class QuizMaster {
 
 	private final Map<String, Handler> handlers;
 	private final TeamRoster teamRoster = new TeamRoster();
-	private JsonWebSocket admin;
+	private Admin admin;
 
 	private ALogger requestLogger = Logger.of("requestLogger");
 
@@ -27,28 +27,31 @@ public class QuizMaster {
 	}
 
 	public Option<Object> join(String teamName, JsonWebSocket out) {
+		Option<Object> response = Option.None();
 		if(!teamName.isEmpty()) {
 			requestLogger.info("Join:" + teamName);
 			Team theTeam = new Team(teamName, out);
 			teamRoster.put(teamName, theTeam);
 			
-			if(admin != null) {
-				admin.get().write(Json.toJson(new Domain.TeamListResponse(teamRoster.keySet())));
-			}
-			return Option.Some(new Domain.RegistrationResponse());
+			response = Option.Some(new Domain.RegistrationResponse());
 		} else {
 			Logger.debug("admin joined");
 			requestLogger.info("Admin");
-			admin = out;
-			return Option.Some(new Domain.TeamListResponse(teamRoster.keySet()));
+			admin = new Admin(out);
 		}
+		
+		if(admin != null) {
+			admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
+		}
+		
+		return response;
 	}
 	
 	public void leave(String teamName) {
 		if(!teamName.isEmpty()) {
 			teamRoster.remove(teamName);
 			if(admin != null) {
-				admin.write(Json.toJson(new Domain.TeamListResponse(teamRoster.keySet())));
+				admin.notify(new Domain.TeamListResponse(teamRoster.keySet()));
 			}
 		} else {
 			admin = null;
