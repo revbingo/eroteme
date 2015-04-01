@@ -10,7 +10,7 @@ import play.libs.Json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class QuizManager {
+public class QuizMaster {
 
 	private final Map<String, Handler> handlers;
 	private final TeamRoster teamRoster = new TeamRoster();
@@ -20,7 +20,7 @@ public class QuizManager {
 
 	private static QuestionAsker questionAsker = new QuestionAsker();
 	
-	public QuizManager() {
+	public QuizMaster() {
 		handlers = new HashMap<>();
 		handlers.put("nextQuestion", new NextQuestionHandler(this, questionAsker));
 		handlers.put("answer", new AnswerQuestionHandler(this, questionAsker));

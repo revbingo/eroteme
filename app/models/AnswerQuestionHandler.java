@@ -9,11 +9,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class AnswerQuestionHandler implements Handler {
 
 	private QuestionAsker asker;
-	private QuizManager manager;
+	private QuizMaster quizMaster;
 	
-	public AnswerQuestionHandler(QuizManager manager, QuestionAsker asker) {
+	public AnswerQuestionHandler(QuizMaster quizMaster, QuestionAsker asker) {
 		this.asker = asker;
-		this.manager = manager;
+		this.quizMaster = quizMaster;
 	}
 	
 	@Override
@@ -22,7 +22,7 @@ public class AnswerQuestionHandler implements Handler {
 		try {
 			correct = asker.answer(message.get("questionNumber").asInt(), message.get("answer").asText());
 			Logger.debug(teamName + " got the answer " + correct);
-			manager.getTeamRoster().get(teamName).score();
+			quizMaster.getTeamRoster().get(teamName).score();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

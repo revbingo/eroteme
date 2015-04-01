@@ -9,17 +9,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class NextQuestionHandler implements Handler {
 
 	private QuestionAsker asker;
-	private QuizManager manager;
+	private QuizMaster quizMaster;
 	
-	public NextQuestionHandler(QuizManager manager, QuestionAsker asker) {
+	public NextQuestionHandler(QuizMaster quizMaster, QuestionAsker asker) {
 		this.asker = asker;
-		this.manager = manager;
+		this.quizMaster = quizMaster;
 	}
 	
 	@Override
 	public Option<Object> handle(String teamName, JsonNode message) {
-		Question question = asker.nextQuestion(manager.getTeamRoster());
-		manager.getTeamRoster().forEach((name, team) -> {
+		Question question = asker.nextQuestion(quizMaster.getTeamRoster());
+		quizMaster.getTeamRoster().forEach((name, team) -> {
 			team.getOut().write(Json.toJson(question));
 		});
 		return Option.Some(question);
