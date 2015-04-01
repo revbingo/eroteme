@@ -1,17 +1,17 @@
 require(["jquery", "bootstrap"], function($){
-	var view = new View();
-	var controller = new Controller(view);
-	view.setController(controller);
+	var controller = new Controller();
 	
-	function Controller(view) {
+	function Controller() {
 		this.socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bindAdmin");
-		this.view = view;
+		this.model = new Model();
+		this.view = new View(this, this.model);
 		var this_ = this;
 		
 		this.socket.onmessage = function(event) {
 			var obj = JSON.parse(event.data);
 			if(obj.type == 'teamList') {
-				this_.view.displayTeamList(obj.teams)
+				this_.model.updateTeams(obj.teams);
+				this_.view.displayTeamList()
 			}
 		}
 		
@@ -21,16 +21,14 @@ require(["jquery", "bootstrap"], function($){
 		
 	}
 	
-	function View() {
+	function View(controller, model) {
 		var this_ = this;
+		this.controller = controller;
+		this.model = model;
 		
-		this.setController = function(controller) {
-			this_.controller = controller;
-		}
-		
-		this.displayTeamList = function(teams) {
+		this.displayTeamList = function() {
 			$("#teams").html("");
-			teams.forEach(function(team) {
+			this_.model.teams.forEach(function(team) {
 				$("#teams").append($("<li />").addClass("list-group-item").html(team.name + ":" + team.score));
 			})
 		}
@@ -40,6 +38,15 @@ require(["jquery", "bootstrap"], function($){
 		})
 	}
 	
+	function Model() {
+		this.teams = [];
+		var this_ = this; 
+		
+		this.updateTeams = function(teamList) {
+			this_.teams = teamList;
+		}
+	}
+		
 	function NextQuestion() {
 		this.type = "nextQuestion";
 	}
