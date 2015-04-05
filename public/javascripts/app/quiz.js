@@ -1,4 +1,4 @@
-require(["jquery", "bootstrap"], function ($) {
+require(["jquery", "bootstrap", "jsrender"], function ($) {
 	var controller = new Controller();
 	
 	function Controller(view) {
@@ -43,6 +43,7 @@ require(["jquery", "bootstrap"], function ($) {
 		this.controller = controller;
 		this.model = model;
 		var this_ = this;
+		var simpleAnswerTmpl = $.templates("#simpleAnswer");
 		
 		this.displayQuestion = function() {
 			$("#questionArea").css("color", "white");
@@ -60,7 +61,7 @@ require(["jquery", "bootstrap"], function ($) {
 		}
 		
 		this.SIMPLE = function(currentQuestion) {
-			$("#answerArea").html('<input type="text" id="answer"></input><button id="submitAnswer">Go!</button>');
+			$("#answerArea").html(simpleAnswerTmpl.render([{}]));
 			$("#submitAnswer").click(function() {
 				controller.sendAnswer(currentQuestion.questionNumber, $("#answer").val());
 				$("#answerArea").empty();
