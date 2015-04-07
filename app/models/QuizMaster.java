@@ -23,7 +23,7 @@ public class QuizMaster {
 	
 	public QuizMaster() {
 		handlers = new HashMap<>();
-		handlers.put("nextQuestion", new NextQuestionHandler(this, questionAsker));
+		handlers.put("nextQuestion", new NextQuestionHandler(this, questionAsker, buzzerManager));
 		handlers.put("answer", new AnswerQuestionHandler(this, questionAsker));
 		handlers.put("buzz", new BuzzerHandler(this, buzzerManager));
 	}
