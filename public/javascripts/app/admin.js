@@ -26,12 +26,10 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		var this_ = this;
 		this.controller = controller;
 		this.model = model;
+		this.teamListTmpl = $.templates("#teamListTmpl");
 		
 		this.displayTeamList = function() {
-			$("#teams").html("");
-			this_.model.teams.forEach(function(team) {
-				$("#teams").append($("<li />").addClass("list-group-item").html(team.name + ":" + team.score));
-			})
+			$("#teams").html(this.teamListTmpl.render(this_.model.teams));
 		}
 		
 		$("#nextQuestion").click(function() {
@@ -46,7 +44,6 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		this.updateTeams = function(teamList) {
 			this_.teams = teamList;
 		}
-		
 		
 	}
 		
