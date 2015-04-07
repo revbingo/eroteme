@@ -48,4 +48,15 @@ public class Domain {
 			this.question = question;
 		}
 	}
+	
+	public static class BuzzAck {
+		public String type = "buzzAck";
+		public int responseOrder;
+		public String teamName;
+		
+		public BuzzAck(String teamName, int responseOrder) {
+			this.teamName = teamName;
+			this.responseOrder = responseOrder;
+		}
+	}
 }

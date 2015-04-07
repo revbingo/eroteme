@@ -36,6 +36,10 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.sendAnswer = function(questionNumber, answer) {
 			this_.socket.send(JSON.stringify(new Answer(questionNumber, answer)));
 		}
+		
+		this.buzz = function(questionNumber) {
+			this_.socket.send(JSON.stringify(new Buzz(questionNumber)));
+		}
 	}
 		
 	function View(controller, model) {
@@ -44,11 +48,9 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.model = model;
 		var this_ = this;
 		var simpleAnswerTmpl = $.templates("#simpleAnswer");
+		var buzzerTmp = $.templates("#buzzer");
 		
 		this.displayQuestion = function() {
-			$("#questionArea").css("color", "white");
-			$("#questionArea").html(this_.model.currentQuestion.questionNumber + ": " + this_.model.currentQuestion.question);
-			
 			this_[this_.model.currentQuestion.answerType](this_.model.currentQuestion);
 		}
 		
@@ -61,10 +63,21 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		}
 		
 		this.SIMPLE = function(currentQuestion) {
+			$("#questionArea").css("color", "white");
+			$("#questionArea").html(this_.model.currentQuestion.questionNumber + ": " + this_.model.currentQuestion.question);
+			
 			$("#answerArea").html(simpleAnswerTmpl.render([{}]));
 			$("#submitAnswer").click(function() {
 				controller.sendAnswer(currentQuestion.questionNumber, $("#answer").val());
 				$("#answerArea").empty();
+			})
+		}
+		
+		this.BUZZER = function(currentQuestion) {
+			$("#answerArea").html(buzzerTmp.render([{}]));
+			$("#buzzer").click(function() {
+				$("#answerArea").html("...");
+				controller.buzz(currentQuestion.questionNumber);
 			})
 		}
 		
@@ -92,5 +105,10 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.answer = answer;
 		this.questionNumber = questionNumber;
 		this.type = "answer";
+	}
+	
+	function Buzz(questionNumber) {
+		this.type = "buzz";
+		this.questionNumber = questionNumber;
 	}
 });

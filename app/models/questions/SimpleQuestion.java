@@ -5,10 +5,9 @@ import play.Logger;
 public class SimpleQuestion extends Question {
 
 	private String answer;
-	private AnswerType answerType = AnswerType.SIMPLE;
 	
 	public SimpleQuestion(int questionNumber, String question, String answer) {
-		super(questionNumber, question);
+		super(AnswerType.SIMPLE, questionNumber, question);
 		this.answer = answer;
 	}
 
@@ -18,7 +17,4 @@ public class SimpleQuestion extends Question {
 		return answer.equalsIgnoreCase(this.answer);
 	}
 
-	public AnswerType getAnswerType() {
-		return answerType;
-	}
 }

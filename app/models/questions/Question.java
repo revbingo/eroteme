@@ -2,13 +2,15 @@ package models.questions;
 
 public abstract class Question {
 	public enum AnswerType {
-		SIMPLE
+		SIMPLE, BUZZER
 	}
 	
 	private String question;
 	private int questionNumber;
+	private AnswerType answerType;
 	
-	public Question(int questionNumber, String question) {
+	public Question(AnswerType type, int questionNumber, String question) {
+		this.answerType = type;
 		this.question = question;
 		this.questionNumber = questionNumber;
 	}
@@ -21,5 +23,9 @@ public abstract class Question {
 		return questionNumber;
 	}
 	
+	public AnswerType getAnswerType() {
+		return answerType;
+	}
+	 
 	public abstract boolean checkAnswer(String answer);
 }

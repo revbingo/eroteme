@@ -19,11 +19,13 @@ public class QuizMaster {
 	private ALogger requestLogger = Logger.of("requestLogger");
 
 	private static QuestionAsker questionAsker = new QuestionAsker();
+	private static BuzzerManager buzzerManager = new BuzzerManager();
 	
 	public QuizMaster() {
 		handlers = new HashMap<>();
 		handlers.put("nextQuestion", new NextQuestionHandler(this, questionAsker));
 		handlers.put("answer", new AnswerQuestionHandler(this, questionAsker));
+		handlers.put("buzz", new BuzzerHandler(this, buzzerManager));
 	}
 
 	public void join(String teamName, JsonWebSocket out) {
@@ -76,7 +78,11 @@ public class QuizMaster {
 	}
 	
 	public void notifyAdmin() {
-		admin.notify(new Domain.TeamListResponse(teamRoster.values()));
+		admin.notify(Option.Some(new Domain.TeamListResponse(teamRoster.values())));
+	}
+	
+	public void notifyAdmin(Option<Object> obj) {
+		admin.notify(obj);
 	}
 	
 	public TeamRoster getTeamRoster() {

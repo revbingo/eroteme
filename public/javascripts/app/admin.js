@@ -1,4 +1,4 @@
-require(["jquery", "bootstrap"], function($){
+require(["jquery", "bootstrap", "jsrender"], function($){
 	var controller = new Controller();
 	
 	function Controller() {
@@ -12,6 +12,8 @@ require(["jquery", "bootstrap"], function($){
 			if(obj.type == 'teamList') {
 				this_.model.updateTeams(obj.teams);
 				this_.view.displayTeamList()
+			} else if (obj.type == 'buzzAck') {
+				alert("Buzz!" + obj.teamName);
 			}
 		}
 		
@@ -44,6 +46,8 @@ require(["jquery", "bootstrap"], function($){
 		this.updateTeams = function(teamList) {
 			this_.teams = teamList;
 		}
+		
+		
 	}
 		
 	function NextQuestion() {
