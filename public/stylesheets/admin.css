@@ -54,6 +54,10 @@ body {
 .site-wrapper-inner li {
 	color: #333;
 }
+
+li.buzzed {
+	background-color: yellow;
+}
  
 .cover-container {
   margin-right: auto;
@@ -123,7 +127,6 @@ body {
   padding: 10px 20px;
   font-weight: bold;
 }
-
 
 /*
  * Footer

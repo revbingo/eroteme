@@ -13,7 +13,8 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 				this_.model.updateTeams(obj.teams);
 				this_.view.displayTeamList()
 			} else if (obj.type == 'buzzAck') {
-				alert("Buzz!" + obj.teamName);
+				this_.model.buzzed(obj);
+				this_.view.displayTeamList()
 			}
 		}
 		
@@ -29,22 +30,50 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		this.teamListTmpl = $.templates("#teamListTmpl");
 		
 		this.displayTeamList = function() {
-			$("#teams").html(this.teamListTmpl.render(this_.model.teams));
+			var teamList = this_.model.getTeamList();
+			$("#teams").html(this_.teamListTmpl.render(teamList));
 		}
 		
 		$("#nextQuestion").click(function() {
-			this_.controller.nextQuestion()
+			this_.model.resetBuzz();
+			this_.displayTeamList();
+			this_.controller.nextQuestion();
 		})
 	}
 	
 	function Model() {
-		this.teams = [];
+		this.teams = {};
 		var this_ = this; 
 		
 		this.updateTeams = function(teamList) {
-			this_.teams = teamList;
+			teamList.forEach(function(item) {
+				var buzzed = false;
+				if(this_.teams[item.name]) {
+					buzzed = this_.teams[item.name].buzzed;
+				}
+				this_.teams[item.name] = item;
+				this_.teams[item.name].buzzed = buzzed;
+			});
+			
 		}
 		
+		this.getTeamList = function() {
+			var teamList = [];
+			$.each(this_.teams, function(key, value) {
+				teamList.push(value);
+			});
+			return teamList;
+		}
+		
+		this.buzzed = function(buzzEvent) {
+			this_.teams[buzzEvent.teamName].buzzed = true;
+		}
+		
+		this.resetBuzz = function() {
+			$.each(this_.teams, function(key, value) {
+				value.buzzed = false;
+			});
+		}
 	}
 		
 	function NextQuestion() {
