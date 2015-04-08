@@ -9,7 +9,7 @@ public class NextQuestionHandler implements Handler {
 
 	private QuestionAsker asker;
 	private QuizMaster quizMaster;
-	private BuzzerManager buzzerManager; 
+	private BuzzerManager buzzerManager;
 	
 	public NextQuestionHandler(QuizMaster quizMaster, QuestionAsker asker, BuzzerManager buzzerManager) {
 		this.asker = asker;
@@ -21,6 +21,7 @@ public class NextQuestionHandler implements Handler {
 	public void handle(Team team, JsonNode message) {
 		Question question = asker.nextQuestion();
 		buzzerManager.reset();
+		team.resetBuzzer();
 		quizMaster.notifyTeams(Option.Some(question));
 	}
 }

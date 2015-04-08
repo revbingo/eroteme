@@ -17,8 +17,9 @@ public class BuzzerHandler implements Handler {
 	@Override
 	public void handle(Team team, JsonNode message) {
 		int responseOrder = this.buzzerManager.respond(team);
+		team.buzzed(responseOrder);
 		Domain.BuzzAck ack = new Domain.BuzzAck(team.getName(), responseOrder);
 		quizMaster.notifyTeam(team, Option.Some(ack));
-		quizMaster.notifyAdmin(Option.Some(ack));
+		quizMaster.notifyAdmin();
 	}
 }

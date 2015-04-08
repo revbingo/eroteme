@@ -9,6 +9,7 @@ public class Team {
 
 	private String name;
 	private int score = 0;
+	private int buzzOrder = -1;
 	
 	public Team(String name, JsonWebSocket out) {
 		this.name = name;
@@ -23,9 +24,25 @@ public class Team {
 		return score;
 	}
 	
+	public int getBuzzOrder() {
+		return this.buzzOrder;
+	}
+	
 	public void scored() {
 		this.score++;
 	}	
+	
+	public void buzzed(int buzzOrder) {
+		this.buzzOrder = buzzOrder;
+	}
+	
+	public void resetBuzzer() {
+		this.buzzOrder = -1;
+	}
+	
+	public boolean haveBuzzed() {
+		return this.buzzOrder > 0;
+	}
 	
 	public void notify(Option<Object> obj) {
 		if(out != null && !obj.isEmpty()) {
