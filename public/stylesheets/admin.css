@@ -10,3 +10,7 @@ li.buzzed {
 .btn:hover {
 	background-position: 0px 0px;
 }
+
+.team {
+	font-size: 1.4em; 
+}

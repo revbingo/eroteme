@@ -6,9 +6,10 @@
 	<a href="#" id="nextQuestion">Next Question</a>
 	
 	<script id="teamListTmpl" type="text/jsrender">
-		<li data-team-name="{{:name}}" class="list-group-item {{if (buzzOrder < 999)}}buzzed{{/if}}">
-			{{:name}} : {{:score}} 
+		<li data-team-name="{{:name}}" class="team list-group-item {{if (buzzOrder < 999)}}buzzed{{/if}}">
+			{{:name}}  
 			<button class="btn btn-default btn-success plusScore">+</button>
+			<span class="label label-warning">{{:score}}</span>
 			<button class="btn btn-default btn-danger minusScore">-</button>
 		</li>
 	</script>
