@@ -29,8 +29,8 @@ public class Team {
 		return this.buzzOrder;
 	}
 	
-	public void scored() {
-		this.score++;
+	public void scored(int delta) {
+		this.score += delta;
 	}	
 	
 	public void buzzed(int buzzOrder) {

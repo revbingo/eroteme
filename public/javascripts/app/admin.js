@@ -19,8 +19,8 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 			this_.socket.send(JSON.stringify(new NextQuestion()));
 		}
 		
-		this.score = function(teamName) {
-			this_.socket.send(JSON.stringify(new Score(teamName)));
+		this.score = function(teamName, delta) {
+			this_.socket.send(JSON.stringify(new Score(teamName, delta)));
 		}
 		
 	}
@@ -39,8 +39,12 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 			var template = this_.teamListTmpl.render(sortedTeamList);
 			$("#teams").html(template);
 			
-			$("#teams li").click(function(event) {
-				this_.controller.score($(this).attr("data-team-name"));
+			$("#teams > li > .plusScore").click(function(event) {
+				this_.controller.score($(this).parent("li").attr("data-team-name"), 1);
+			})
+			
+			$("#teams > li > .minusScore").click(function(event) {
+				this_.controller.score($(this).parent("li").attr("data-team-name"), -1);
 			})
 		}
 		
@@ -64,8 +68,9 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		this.type = "nextQuestion";
 	}
 	
-	function Score(teamName) {
+	function Score(teamName, delta) {
 		this.type = "score";
-		this.team = teamName
+		this.team = teamName;
+		this.delta = delta;
 	}
 })

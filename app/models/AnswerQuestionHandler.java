@@ -21,7 +21,7 @@ public class AnswerQuestionHandler implements Handler {
 		try {
 			correct = asker.answer(message.get("questionNumber").asInt(), message.get("answer").asText());
 			if(correct) {
-				team.scored();
+				team.scored(1);
 			}
 			quizMaster.notifyTeam(team, Option.Some(new QuestionAnswerResponse(correct, team.getScore())));
 			quizMaster.notifyAdmin();

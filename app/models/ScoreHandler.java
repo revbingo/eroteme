@@ -16,7 +16,8 @@ public class ScoreHandler implements Handler {
 	public void handle(Team team, JsonNode message) {
 		System.out.println("Score handler!");
 		Team teamThatScored = quizMaster.getTeamRoster().getOrDefault(message.get("team").asText(), Team.nil());
-		teamThatScored.scored();
+		int delta = message.get("delta").asInt();
+		teamThatScored.scored(delta);
 		quizMaster.notifyTeam(teamThatScored, Option.Some(new Domain.Scored(teamThatScored.getScore())));
 		quizMaster.notifyAdmin();
 	}
