@@ -8,8 +8,8 @@
 	<script id="teamListTmpl" type="text/jsrender">
 		<li data-team-name="{{:name}}" class="list-group-item {{if (buzzOrder < 999)}}buzzed{{/if}}">
 			{{:name}} : {{:score}} 
-			<button class="btn btn-default plusScore">+</button>
-			<button class="btn btn-default minusScore">-</button>
+			<button class="btn btn-default btn-success plusScore">+</button>
+			<button class="btn btn-default btn-danger minusScore">-</button>
 		</li>
 	</script>
 }
