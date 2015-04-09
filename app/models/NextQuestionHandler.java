@@ -21,7 +21,11 @@ public class NextQuestionHandler implements Handler {
 	public void handle(Team team, JsonNode message) {
 		Question question = asker.nextQuestion();
 		buzzerManager.reset();
-		team.resetBuzzer();
+		quizMaster.getTeamRoster().values()
+			.stream()
+			.forEach((t) -> { t.resetBuzzer(); });
+		
 		quizMaster.notifyTeams(Option.Some(question));
+		quizMaster.notifyAdmin();
 	}
 }

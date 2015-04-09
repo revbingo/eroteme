@@ -69,7 +69,7 @@ public class QuizMaster {
 		String type = jsonMessage.get("type").asText();
 		Handler handler = handlers.getOrDefault(type, new NullHandler());
 		Team team = teamRoster.getOrDefault(teamName, Team.nil());
-		
+
 		handler.handle(team, jsonMessage);
 	}
 
