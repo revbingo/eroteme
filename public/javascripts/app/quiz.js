@@ -12,7 +12,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 			
 			socket.onmessage = function(event) {
 				var json = JSON.parse(event.data);
-				this_.view.debug(json);
+			//	this_.view.debug(json);
 				
 				if(json.type == "answerResponse") {
 					this_.model.answerReceived(json)
