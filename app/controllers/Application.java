@@ -12,7 +12,9 @@ public class Application extends Controller {
 	private final static String TEAM_COOKIE = "team";
 	
     public static Result index() {
-//    	response().discardCookie(TEAM_COOKIE);
+    	if(request().cookie(TEAM_COOKIE) != null) {
+    		return redirect("/quiz");
+    	}
         return ok(index.render());
     }
     
@@ -29,5 +31,10 @@ public class Application extends Controller {
     	}
     	String teamName = new String(Base64.getDecoder().decode(request().cookie(TEAM_COOKIE).value().getBytes()));
     	return ok(quiz.render(teamName));
+    }
+    
+    public static Result logout() {
+    	response().discardCookie(TEAM_COOKIE);
+    	return redirect("/");
     }
 }
