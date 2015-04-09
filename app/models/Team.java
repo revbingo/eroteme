@@ -7,9 +7,10 @@ public class Team {
 
 	private JsonWebSocket out;
 
+	private final static int NOT_BUZZED = 1000;
 	private String name;
 	private int score = 0;
-	private int buzzOrder = -1;
+	private int buzzOrder = NOT_BUZZED;
 	
 	public Team(String name, JsonWebSocket out) {
 		this.name = name;
@@ -37,7 +38,7 @@ public class Team {
 	}
 	
 	public void resetBuzzer() {
-		this.buzzOrder = -1;
+		this.buzzOrder = NOT_BUZZED;
 	}
 	
 	public boolean haveBuzzed() {
