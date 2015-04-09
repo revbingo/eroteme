@@ -26,6 +26,7 @@ public class QuizMaster {
 		handlers.put("nextQuestion", new NextQuestionHandler(this, questionAsker, buzzerManager));
 		handlers.put("answer", new AnswerQuestionHandler(this, questionAsker));
 		handlers.put("buzz", new BuzzerHandler(this, buzzerManager));
+		handlers.put("score", new ScoreHandler(this));
 	}
 
 	public void join(String teamName, JsonWebSocket out) {

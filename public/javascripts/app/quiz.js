@@ -18,6 +18,9 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 					this_.model.answerReceived(json)
 					this_.view.displayAnswer();
 					this_.view.updateScore();
+				} else if (json.type == "scored") {
+					this_.model.scored(json.score);
+					this_.view.updateScore();
 				} else {
 					if(json.answerType) {
 						this_.model.nextQuestion(json);
@@ -91,13 +94,19 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.teamScore = 0;
 		this.questionCorrect = false;
 		
+		var this_ = this;
+		
 		this.nextQuestion = function(question) {
-			this.currentQuestion = question;
+			this_.currentQuestion = question;
 		}
 		
 		this.answerReceived = function(answer) {
-			this.teamScore = answer.score;
-			this.questionCorrect = answer.correct;
+			this_.teamScore = answer.score;
+			this_.questionCorrect = answer.correct;
+		}
+		
+		this.scored = function(score) {
+			this_.teamScore = score;
 		}
 	}
 	

@@ -59,4 +59,13 @@ public class Domain {
 			this.responseOrder = responseOrder;
 		}
 	}
+	
+	public static class Scored {
+		public String type = "scored";
+		public int score;
+		
+		public Scored(int score) {
+			this.score = score;
+		}
+	}
 }

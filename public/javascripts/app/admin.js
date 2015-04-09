@@ -18,6 +18,11 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		this.nextQuestion = function() {
 			this_.socket.send(JSON.stringify(new NextQuestion()));
 		}
+		
+		this.score = function(teamName) {
+			this_.socket.send(JSON.stringify(new Score(teamName)));
+		}
+		
 	}
 	
 	function View(controller, model) {
@@ -33,12 +38,17 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 			
 			var template = this_.teamListTmpl.render(sortedTeamList);
 			$("#teams").html(template);
+			
+			$("#teams li").click(function(event) {
+				this_.controller.score($(this).attr("data-team-name"));
+			})
 		}
 		
 		$("#nextQuestion").click(function() {
 			this_.displayTeamList();
 			this_.controller.nextQuestion();
 		})
+		
 	}
 	
 	function Model() {
@@ -52,5 +62,10 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		
 	function NextQuestion() {
 		this.type = "nextQuestion";
+	}
+	
+	function Score(teamName) {
+		this.type = "score";
+		this.team = teamName
 	}
 })
