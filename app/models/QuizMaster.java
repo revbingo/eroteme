@@ -31,9 +31,16 @@ public class QuizMaster {
 
 	public void join(String teamName, JsonWebSocket out) {
 		requestLogger.info("Join:" + teamName);
-		Team theTeam = new Team(teamName, out);
+		
+		Team theTeam = teamRoster.get(teamName);
+		if(theTeam == null) {
+			theTeam = new Team(teamName, out);
+		} else {
+			theTeam.setOut(out);
+		}
+		
 		teamRoster.put(teamName, theTeam);
-		theTeam.notify(Option.Some(new Domain.RegistrationResponse()));
+		theTeam.notify(Option.Some(new Domain.RegistrationResponse(theTeam)));
 		notifyAdmin();
 	}
 	

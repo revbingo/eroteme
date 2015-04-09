@@ -19,6 +19,12 @@ public class Domain {
 	public static class RegistrationResponse {
 		public String type = "registrationResponse";
 		public int statusCode = 200;
+		public Team team;
+		
+		public RegistrationResponse(Team team) {
+			this.team = team;
+		}
+		
 	}
 	
 	public static class ErrorResponse {

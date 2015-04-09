@@ -50,6 +50,10 @@ public class Team {
 			out.write(Json.toJson(obj.get()));
 		}
 	}
+	
+	public void setOut(JsonWebSocket out) {
+		this.out = out;
+	}
 
 	public static Team nil() {
 		return new Team(null, null);

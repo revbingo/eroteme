@@ -21,6 +21,9 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 				} else if (json.type == "scored") {
 					this_.model.scored(json.score);
 					this_.view.updateScore();
+				} else if (json.type == "registrationResponse") {
+					this_.model.scored(json.team.score);
+					this_.view.updateScore();
 				} else {
 					if(json.answerType) {
 						this_.model.nextQuestion(json);

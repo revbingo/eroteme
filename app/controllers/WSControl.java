@@ -17,10 +17,6 @@ public class WSControl extends Controller {
 			
 			quizMaster.join(teamName, outSocket);
 			
-			in.onClose(() -> {
-				quizMaster.leave(teamName);
-			});
-			
 			in.onMessage((json) -> {
 				quizMaster.messageReceived(teamName, json);
 			});

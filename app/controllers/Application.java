@@ -12,7 +12,7 @@ public class Application extends Controller {
 	private final static String TEAM_COOKIE = "team";
 	
     public static Result index() {
-    	response().discardCookie(TEAM_COOKIE);
+//    	response().discardCookie(TEAM_COOKIE);
         return ok(index.render());
     }
     
