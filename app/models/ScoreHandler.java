@@ -14,7 +14,6 @@ public class ScoreHandler implements Handler {
 	
 	@Override
 	public void handle(Team team, JsonNode message) {
-		System.out.println("Score handler!");
 		Team teamThatScored = quizMaster.getTeamRoster().getOrDefault(message.get("team").asText(), Team.nil());
 		int delta = message.get("delta").asInt();
 		teamThatScored.scored(delta);
