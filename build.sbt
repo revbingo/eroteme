@@ -13,4 +13,4 @@ LessKeys.compress in Assets := true
 
 includeFilter in (Assets, LessKeys.less) := "*.less"
 
-pipelineStages in Assets := Seq(uglify)
+pipelineStages in Assets := Seq(uglify, gzip)
