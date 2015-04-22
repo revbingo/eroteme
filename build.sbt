@@ -9,4 +9,6 @@ libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
   cache
-)     
+)
+
+pipelineStages in Assets := Seq(uglify)

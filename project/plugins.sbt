@@ -10,3 +10,5 @@ addSbtPlugin("com.beowulfe.play" % "ebean-jdk8-fix" % "3.3.1-SNAPSHOT")
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.8")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.1")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "1.0.3")
