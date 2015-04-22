@@ -1,7 +1,7 @@
 require(["jquery", "bootstrap", "jsrender"], function ($) {
-	var controller = new Controller();
+	new Controller();
 	
-	function Controller(view) {
+	function Controller() {
 		this.socket = register();
 		this.model = new Model();
 		this.view = new View(this, this.model);
@@ -33,7 +33,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 				
 			};
 			
-			socket.onclose = function(event) {
+			socket.onclose = function() {
 				this_.socket = register();
 			};
 			return socket;

@@ -1,5 +1,5 @@
 require(["jquery", "bootstrap", "jsrender"], function($){
-	var controller = new Controller();
+	new Controller();
 	
 	function Controller() {
 		this.socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bindAdmin");
@@ -39,11 +39,11 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 			var template = this_.teamListTmpl.render(sortedTeamList);
 			$("#teams").html(template);
 			
-			$("#teams > li > .plusScore").click(function(event) {
+			$("#teams > li > .plusScore").click(function() {
 				this_.controller.score($(this).parent("li").attr("data-team-name"), 1);
 			});
 			
-			$("#teams > li > .minusScore").click(function(event) {
+			$("#teams > li > .minusScore").click(function() {
 				this_.controller.score($(this).parent("li").attr("data-team-name"), -1);
 			});
 		};
@@ -57,8 +57,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 	
 	function Model() {
 		this.teams = [];
-		var this_ = this; 
-		
+
 		this.updateTeams = function(teamList) {
 			this.teams = teamList;
 		};
