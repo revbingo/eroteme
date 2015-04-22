@@ -15,7 +15,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 			//	this_.view.debug(json);
 				
 				if(json.type == "answerResponse") {
-					this_.model.answerReceived(json)
+					this_.model.answerReceived(json);
 					this_.view.displayAnswer();
 					this_.view.updateScore();
 				} else if (json.type == "scored") {
@@ -31,21 +31,21 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 					}	
 				}
 				
-			}
+			};
 			
 			socket.onclose = function(event) {
 				this_.socket = register();
-			}
+			};
 			return socket;
 		}
 		
 		this.sendAnswer = function(questionNumber, answer) {
 			this_.socket.send(JSON.stringify(new Answer(questionNumber, answer)));
-		}
+		};
 		
 		this.buzz = function(questionNumber) {
 			this_.socket.send(JSON.stringify(new Buzz(questionNumber)));
-		}
+		};
 	}
 		
 	function View(controller, model) {
@@ -58,15 +58,15 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		
 		this.displayQuestion = function() {
 			this_[this_.model.currentQuestion.answerType](this_.model.currentQuestion);
-		}
+		};
 		
 		this.displayAnswer = function() {
 			$("#questionArea").css("color", this_.model.questionCorrect ? "green" : "red");
-		}
+		};
 		
 		this.updateScore = function() {
 			$("#score").html(this_.model.teamScore);
-		}
+		};
 		
 		this.SIMPLE = function(currentQuestion) {
 			$("#questionArea").css("color", "white");
@@ -76,20 +76,20 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 			$("#submitAnswer").click(function() {
 				controller.sendAnswer(currentQuestion.questionNumber, $("#answer").val());
 				$("#answerArea").empty();
-			})
-		}
+			});
+		};
 		
 		this.BUZZER = function(currentQuestion) {
 			$("#answerArea").html(buzzerTmp.render([{}]));
 			$("#buzzer").click(function() {
 				$("#answerArea").html("...");
 				controller.buzz(currentQuestion.questionNumber);
-			})
-		}
+			});
+		};
 		
 		this.debug = function(data) {
 			$("#debug").html(JSON.stringify(data));
-		}
+		};
 	}
 
 	function Model() {
@@ -101,16 +101,16 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		
 		this.nextQuestion = function(question) {
 			this_.currentQuestion = question;
-		}
+		};
 		
 		this.answerReceived = function(answer) {
 			this_.teamScore = answer.score;
 			this_.questionCorrect = answer.correct;
-		}
+		};
 		
 		this.scored = function(score) {
 			this_.teamScore = score;
-		}
+		};
 	}
 	
 	function Answer(questionNumber, answer) {
@@ -123,4 +123,5 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.type = "buzz";
 		this.questionNumber = questionNumber;
 	}
+   
 });

@@ -11,17 +11,17 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 			var obj = JSON.parse(event.data);
 			if(obj.type == 'teamList') {
 				this_.model.updateTeams(obj.teams);
-				this_.view.displayTeamList()
+				this_.view.displayTeamList();
 			}
-		}
+		};
 		
 		this.nextQuestion = function() {
 			this_.socket.send(JSON.stringify(new NextQuestion()));
-		}
+		};
 		
 		this.score = function(teamName, delta) {
 			this_.socket.send(JSON.stringify(new Score(teamName, delta)));
-		}
+		};
 		
 	}
 	
@@ -41,17 +41,17 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 			
 			$("#teams > li > .plusScore").click(function(event) {
 				this_.controller.score($(this).parent("li").attr("data-team-name"), 1);
-			})
+			});
 			
 			$("#teams > li > .minusScore").click(function(event) {
 				this_.controller.score($(this).parent("li").attr("data-team-name"), -1);
-			})
-		}
+			});
+		};
 		
 		$("#nextQuestion").click(function() {
 			this_.displayTeamList();
 			this_.controller.nextQuestion();
-		})
+		});
 		
 	}
 	
@@ -61,7 +61,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		
 		this.updateTeams = function(teamList) {
 			this.teams = teamList;
-		}
+		};
 	}
 		
 	function NextQuestion() {
@@ -73,4 +73,4 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		this.team = teamName;
 		this.delta = delta;
 	}
-})
+});

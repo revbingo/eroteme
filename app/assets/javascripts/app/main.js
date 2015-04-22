@@ -10,7 +10,7 @@ requirejs.config({
             deps: ['jquery']
         },
         jsrender: {
-        	deps: ['jquery']
+            deps: ['jquery']
         }
     }
 });
