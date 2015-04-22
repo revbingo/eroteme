@@ -6,7 +6,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
   javaJdbc,
-  cache
+  cache,
+  filters
 )
 
 LessKeys.compress in Assets := true
