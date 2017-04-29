@@ -18,11 +18,11 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="application" level="debug">
+    <logger name="application" level="debug" additivity="false">
         <appender-ref ref="APP_LOG" />
     </logger>
 
-    <logger name="requestLogger" level="info">
+    <logger name="requestLogger" level="info" additivity="false">
         <appender-ref ref="APP_LOG" />
     </logger>
 </configuration>

@@ -1,15 +1,17 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.JsonWebSocket;
 import models.QuizMaster;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import javax.inject.Inject;
 
 public class WSControl extends Controller {
-	
-	private final static QuizMaster quizMaster = new QuizMaster();
+
+	@Inject
+	private QuizMaster quizMaster;
 	
 	public WebSocket<JsonNode> bind(String teamName) {
 		return WebSocket.whenReady((in,out) -> {
