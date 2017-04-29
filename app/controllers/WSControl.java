@@ -11,7 +11,7 @@ public class WSControl extends Controller {
 	
 	private final static QuizMaster quizMaster = new QuizMaster();
 	
-	public static WebSocket<JsonNode> bind(String teamName) {
+	public WebSocket<JsonNode> bind(String teamName) {
 		return WebSocket.whenReady((in,out) -> {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
 			
@@ -24,7 +24,7 @@ public class WSControl extends Controller {
 		});
 	}
 	
-	public static WebSocket<JsonNode> bindAdmin() {
+	public WebSocket<JsonNode> bindAdmin() {
 		return WebSocket.whenReady((in,out) -> {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
 			

@@ -7,7 +7,7 @@ import views.html.admin.*;
 
 public class Admin extends Controller {
 	
-	public static Result index() {
+	public Result index() {
 		return ok(index.render());
 	}
 }

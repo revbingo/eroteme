@@ -10,6 +10,8 @@ libraryDependencies ++= Seq(
   filters
 )
 
+routesGenerator := InjectedRoutesGenerator
+
 LessKeys.compress in Assets := true
 
 includeFilter in (Assets, LessKeys.less) := "*.less"
