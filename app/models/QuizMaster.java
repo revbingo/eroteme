@@ -1,14 +1,13 @@
 package models;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import play.Logger;
 import play.Logger.ALogger;
-import play.libs.F.Option;
 import play.libs.Json;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class QuizMaster {
 
@@ -40,7 +39,7 @@ public class QuizMaster {
 		}
 		
 		teamRoster.put(teamName, theTeam);
-		theTeam.notify(Option.Some(new Domain.RegistrationResponse(theTeam)));
+		theTeam.notify(Optional.of(new Domain.RegistrationResponse(theTeam)));
 		notifyAdmin();
 	}
 	
@@ -73,23 +72,23 @@ public class QuizMaster {
 		handler.handle(team, jsonMessage);
 	}
 
-	public void notifyTeam(Team team, Option<Object> response) {
-		if(response.isDefined()) {
+	public void notifyTeam(Team team, Optional<Object> response) {
+		if(response.isPresent()) {
 			team.notify(response);
 		}
 	}
 	
-	public void notifyTeams(Option<Object> obj) {
+	public void notifyTeams(Optional<Object> obj) {
 		getTeamRoster().forEach((name, team) -> {
 			team.notify(obj);
 		});
 	}
 	
 	public void notifyAdmin() {
-		admin.notify(Option.Some(new Domain.TeamListResponse(teamRoster.values())));
+		admin.notify(Optional.of(new Domain.TeamListResponse(teamRoster.values())));
 	}
 	
-	public void notifyAdmin(Option<Object> obj) {
+	public void notifyAdmin(Optional<Object> obj) {
 		admin.notify(obj);
 	}
 	

@@ -1,7 +1,8 @@
 package models;
 
-import play.libs.F.Option;
 import play.libs.Json;
+
+import java.util.Optional;
 
 public class Team {
 
@@ -45,8 +46,8 @@ public class Team {
 		return this.buzzOrder > 0;
 	}
 	
-	public void notify(Option<Object> obj) {
-		if(out != null && !obj.isEmpty()) {
+	public void notify(Optional<Object> obj) {
+		if(out != null && obj.isPresent()) {
 			out.write(Json.toJson(obj.get()));
 		}
 	}

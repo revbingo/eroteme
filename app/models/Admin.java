@@ -1,7 +1,8 @@
 package models;
 
-import play.libs.F.Option;
 import play.libs.Json;
+
+import java.util.Optional;
 
 public class Admin {
 
@@ -11,8 +12,8 @@ public class Admin {
 		this.out = out;
 	}
 	
-	public void notify(Option<Object> obj) {
-		if(out != null && obj.isDefined()) {
+	public void notify(Optional<Object> obj) {
+		if(out != null && obj.isPresent()) {
 			out.write(Json.toJson(obj.get()));
 		}
 	}

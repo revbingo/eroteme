@@ -1,9 +1,9 @@
 package models;
 
-import models.questions.Question;
-import play.libs.F.Option;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import models.questions.Question;
+
+import java.util.Optional;
 
 public class NextQuestionHandler implements Handler {
 
@@ -25,7 +25,7 @@ public class NextQuestionHandler implements Handler {
 			.stream()
 			.forEach((t) -> { t.resetBuzzer(); });
 		
-		quizMaster.notifyTeams(Option.Some(question));
+		quizMaster.notifyTeams(Optional.of(question));
 		quizMaster.notifyAdmin();
 	}
 }

@@ -1,8 +1,8 @@
 package models;
 
-import play.libs.F.Option;
-
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.Optional;
 
 public class ScoreHandler implements Handler {
 
@@ -17,7 +17,7 @@ public class ScoreHandler implements Handler {
 		Team teamThatScored = quizMaster.getTeamRoster().getOrDefault(message.get("team").asText(), Team.nil());
 		int delta = message.get("delta").asInt();
 		teamThatScored.scored(delta);
-		quizMaster.notifyTeam(teamThatScored, Option.Some(new Domain.Scored(teamThatScored.getScore())));
+		quizMaster.notifyTeam(teamThatScored, Optional.of(new Domain.Scored(teamThatScored.getScore())));
 		quizMaster.notifyAdmin();
 	}
 

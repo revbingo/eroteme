@@ -1,9 +1,9 @@
 package models;
 
-import models.Domain.QuestionAnswerResponse;
-import play.libs.F.Option;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import models.Domain.QuestionAnswerResponse;
+
+import java.util.Optional;
 
 public class AnswerQuestionHandler implements Handler {
 
@@ -23,7 +23,7 @@ public class AnswerQuestionHandler implements Handler {
 			if(correct) {
 				team.scored(1);
 			}
-			quizMaster.notifyTeam(team, Option.Some(new QuestionAnswerResponse(correct, team.getScore())));
+			quizMaster.notifyTeam(team, Optional.of(new QuestionAnswerResponse(correct, team.getScore())));
 			quizMaster.notifyAdmin();
 		} catch (Throwable t) {
 			t.printStackTrace();
