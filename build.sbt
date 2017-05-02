@@ -12,6 +12,10 @@ libraryDependencies ++= Seq(
   filters
 )
 
+kotlinLib("stdlib")
+
+kotlinSource in Compile := baseDirectory( _ / "appKotlin" ).value
+
 routesGenerator := InjectedRoutesGenerator
 
 LessKeys.compress in Assets := true
