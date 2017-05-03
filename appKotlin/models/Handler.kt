@@ -7,6 +7,23 @@ interface Handler {
     fun handle(team: Team?, message: JsonNode)
 }
 
+abstract class TeamSpecificHandler: Handler {
+    override fun handle(team: Team?, message: JsonNode) {
+        team ?: return
+        handleTeamMessage(team, message)
+    }
+
+    abstract fun handleTeamMessage(team: Team, message: JsonNode)
+}
+
+abstract class AdminHandler: Handler {
+    override fun handle(team: Team?, message: JsonNode) {
+        handleAdminMessage(message)
+    }
+
+    abstract fun handleAdminMessage(message: JsonNode)
+}
+
 class NullHandler : Handler {
 
     override fun handle(team: Team?, message: JsonNode) {
@@ -14,9 +31,9 @@ class NullHandler : Handler {
     }
 }
 
-class ScoreHandler(private val quizMaster: QuizMaster) : Handler {
+class ScoreHandler(private val quizMaster: QuizMaster) : AdminHandler() {
 
-    override fun handle(team: Team?, message: JsonNode) {
+    override fun handleAdminMessage(message: JsonNode) {
         val teamThatScored = quizMaster.teamRoster[message.get("team").asText()] ?: return
         val delta = message.get("delta").asInt()
         teamThatScored.scored(delta)
@@ -25,10 +42,9 @@ class ScoreHandler(private val quizMaster: QuizMaster) : Handler {
     }
 }
 
-class BuzzerHandler(private val quizMaster: QuizMaster, private val buzzerManager: BuzzerManager) : Handler {
+class BuzzerHandler(private val quizMaster: QuizMaster, private val buzzerManager: BuzzerManager) : TeamSpecificHandler() {
 
-    override fun handle(team: Team?, message: JsonNode) {
-        team ?: return
+    override fun handleTeamMessage(team: Team, message: JsonNode) {
         val responseOrder = this.buzzerManager.respond(team)
         team.buzzed(responseOrder)
         val ack = Message.BuzzAck(team.name, responseOrder)
@@ -38,9 +54,9 @@ class BuzzerHandler(private val quizMaster: QuizMaster, private val buzzerManage
 }
 
 
-class NextQuestionHandler(private val quizMaster: QuizMaster, private val asker: QuestionAsker, private val buzzerManager: BuzzerManager) : Handler {
+class NextQuestionHandler(private val quizMaster: QuizMaster, private val asker: QuestionAsker, private val buzzerManager: BuzzerManager) : AdminHandler() {
 
-    override fun handle(team: Team?, message: JsonNode) {
+    override fun handleAdminMessage(message: JsonNode) {
         val question = asker.nextQuestion()
         buzzerManager.reset()
 
@@ -51,10 +67,9 @@ class NextQuestionHandler(private val quizMaster: QuizMaster, private val asker:
     }
 }
 
-class AnswerQuestionHandler(private val quizMaster: QuizMaster, private val asker: QuestionAsker) : Handler {
+class AnswerQuestionHandler(private val quizMaster: QuizMaster, private val asker: QuestionAsker) : TeamSpecificHandler() {
 
-    override fun handle(team: Team?, message: JsonNode) {
-        team ?: return
+    override fun handleTeamMessage(team: Team, message: JsonNode) {
         val correct = asker.answer(message.get("questionNumber").asInt(), message.get("answer").asText())
         if (correct) {
             team.scored(1)

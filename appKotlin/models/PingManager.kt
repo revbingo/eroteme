@@ -2,7 +2,7 @@ package models
 
 import com.fasterxml.jackson.databind.JsonNode
 
-class PingManager(private val quizMaster: QuizMaster): Handler {
+class PingManager(private val quizMaster: QuizMaster): TeamSpecificHandler() {
 
     val pingCount = mutableMapOf<String, Int>()
 
@@ -33,8 +33,8 @@ class PingManager(private val quizMaster: QuizMaster): Handler {
         pingCount[teamName] = 0
     }
 
-    override fun handle(team: Team?, message: JsonNode) {
-        pong(team!!.name)
+    override fun handleTeamMessage(team: Team, message: JsonNode) {
+        pong(team.name)
     }
 
 }
