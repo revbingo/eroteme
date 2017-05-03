@@ -1,24 +1,22 @@
 package models
 
-sealed class Domain(val type: String) {
+sealed class Message(val type: String) {
 
-    class QuestionAnswerResponse(var correct: Boolean, var score: Int): Domain("answerResponse")
+    class QuestionAnswerResponse(val correct: Boolean, val score: Int): Message("answerResponse")
 
-    class RegistrationResponse(var team: Team): Domain("registrationResponse") {
-        val statusCode = 200
-    }
+    class RegistrationResponse(val team: Team): Message("registrationResponse")
 
-    class ErrorResponse(var message: String): Domain("error")
+    class TeamListResponse(val teams: Collection<Team>): Message("teamList")
 
-    class TeamListResponse(var teams: Collection<Team>): Domain("teamList")
+    class BuzzAck(val teamName: String, val responseOrder: Int): Message("buzzAck")
 
-    class QuestionAdminResponse(var question: Question): Domain("currentQuestion")
+    class Scored(val score: Int): Message("scored")
 
-    class BuzzAck(var teamName: String, var responseOrder: Int): Domain("buzzAck")
+    class ErrorResponse(val message: String): Message("error")
 
-    class Scored(var score: Int): Domain("scored")
+    class QuestionAdminResponse(val question: Question): Message("currentQuestion")
 
-    abstract class Question(val answerType: AnswerType, val questionNumber: Int, val question: String): Domain("question") {
+    abstract class Question(val answerType: AnswerType, val questionNumber: Int, val question: String): Message("question") {
         enum class AnswerType {
             SIMPLE, BUZZER
         }

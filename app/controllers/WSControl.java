@@ -31,7 +31,6 @@ public class WSControl extends Controller {
 					logger.error(e.getMessage(), e);
 				}
 			});
-			
 		});
 	}
 	

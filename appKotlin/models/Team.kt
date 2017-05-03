@@ -2,7 +2,7 @@ package models
 
 import play.libs.Json
 
-class Team(val name: String?, private var out: JsonWebSocket?) {
+class Team(val name: String, private var out: JsonWebSocket?) {
     var score = 0
         private set
     var buzzOrder = NOT_BUZZED
@@ -24,7 +24,7 @@ class Team(val name: String?, private var out: JsonWebSocket?) {
         return this.buzzOrder > 0
     }
 
-    fun notify(msg: Domain) {
+    fun notify(msg: Message) {
         out?.write(Json.toJson(msg))
     }
 
@@ -37,7 +37,7 @@ class Team(val name: String?, private var out: JsonWebSocket?) {
         private val NOT_BUZZED = 1000
 
         fun nil(): Team {
-            return Team(null, null)
+            return Team("", null)
         }
     }
 

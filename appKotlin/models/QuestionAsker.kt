@@ -5,13 +5,13 @@ import java.util.*
 
 class QuestionAsker {
 
-    private val questions = ArrayList<Domain.Question>()
+    private val questions = ArrayList<Message.Question>()
     private var questionCount = 0
 
-    fun nextQuestion(): Domain.Question {
+    fun nextQuestion(): Message.Question {
         Logger.debug("Next question!")
         questionCount++
-        val question: Domain.Question = Domain.BuzzerQuestion(questionCount, "What time is it?")
+        val question: Message.Question = Message.BuzzerQuestion(questionCount, "What time is it?")
         questions.add(question)
         return question
     }

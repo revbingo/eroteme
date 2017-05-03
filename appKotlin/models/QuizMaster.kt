@@ -24,7 +24,7 @@ class QuizMaster {
         val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out) })
         theTeam.rebind(out)
 
-        theTeam.notify(Domain.RegistrationResponse(theTeam))
+        theTeam.notify(Message.RegistrationResponse(theTeam))
         notifyAdmin()
     }
 
@@ -58,19 +58,21 @@ class QuizMaster {
         handler.handle(team, jsonMessage)
     }
 
-    fun notifyTeam(team: Team, response: Domain) {
+    fun eachTeam(callback: (Team) -> Unit) {
+        teamRoster.values.forEach(callback)
+    }
+
+    fun notifyTeams(msg: Message) = eachTeam { it.notify(msg) }
+
+    fun notifyTeam(team: Team, response: Message) {
         team.notify(response)
     }
 
-    fun notifyTeams(msg: Domain) {
-        teamRoster.values.forEach { it.notify(msg) }
-    }
-
     fun notifyAdmin() {
-        admin?.notify(Domain.TeamListResponse(teamRoster.values))
+        admin?.notify(Message.TeamListResponse(teamRoster.values))
     }
 
-    fun notifyAdmin(msg: Domain) {
+    fun notifyAdmin(msg: Message) {
         admin?.notify(msg)
     }
 
