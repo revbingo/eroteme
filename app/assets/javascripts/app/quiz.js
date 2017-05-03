@@ -24,6 +24,8 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 				} else if (json.type == "registrationResponse") {
 					this_.model.scored(json.team.score);
 					this_.view.updateScore();
+                } else if (json.type == "ping") {
+                    this_.socket.send(JSON.stringify(new Pong()));
 				} else {
 					if(json.answerType) {
 						this_.model.nextQuestion(json);
@@ -123,5 +125,8 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.type = "buzz";
 		this.questionNumber = questionNumber;
 	}
-   
+
+    function Pong() {
+        this.type = "pong";
+    }
 });

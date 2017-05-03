@@ -31,6 +31,8 @@ public class WSControl extends Controller {
 					logger.error(e.getMessage(), e);
 				}
 			});
+
+			in.onClose(() -> quizMaster.awol(teamName));
 		});
 	}
 	

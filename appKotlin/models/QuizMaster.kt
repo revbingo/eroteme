@@ -3,21 +3,29 @@ package models
 import com.fasterxml.jackson.databind.JsonNode
 import play.Logger
 import play.libs.Json
+import kotlin.concurrent.fixedRateTimer
 
 class QuizMaster {
 
     private val requestLogger = Logger.of("requestLogger")
+    private val pingManager = PingManager(this)
 
     private val handlers: Map<String, Handler> = mapOf(
             "nextQuestion" to NextQuestionHandler(this, questionAsker, buzzerManager),
             "answer" to AnswerQuestionHandler(this, questionAsker),
             "buzz" to BuzzerHandler(this, buzzerManager),
-            "score" to ScoreHandler(this)
+            "score" to ScoreHandler(this),
+            "pong" to pingManager
     )
 
     val teamRoster = mutableMapOf<String, Team>()
     private var admin: Admin? = null
 
+    init {
+        fixedRateTimer("ping", period = 5000) {
+            pingManager.ping()
+        }
+    }
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
 
@@ -38,6 +46,11 @@ class QuizMaster {
     fun deregisterAdmin() {
         requestLogger.info("Admin leave")
         admin = null
+    }
+
+    fun awol(teamName: String) {
+        teamRoster[teamName]?.status = Team.Status.AWOL
+        notifyAdmin()
     }
 
     fun leave(teamName: String) {

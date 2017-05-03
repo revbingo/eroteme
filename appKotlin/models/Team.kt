@@ -8,6 +8,8 @@ class Team(val name: String, private var out: JsonWebSocket?) {
     var buzzOrder = NOT_BUZZED
         private set
 
+    var status: Status = Status.LIVE
+
     fun scored(delta: Int) {
         this.score += delta
     }
@@ -41,4 +43,7 @@ class Team(val name: String, private var out: JsonWebSocket?) {
         }
     }
 
+    enum class Status {
+        LIVE, AWOL
+    }
 }

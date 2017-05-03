@@ -12,6 +12,8 @@ sealed class Message(val type: String) {
 
     class Scored(val score: Int): Message("scored")
 
+    class Ping() : Message("ping")
+
     class ErrorResponse(val message: String): Message("error")
 
     class QuestionAdminResponse(val question: Question): Message("currentQuestion")
