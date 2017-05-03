@@ -9,19 +9,17 @@ typealias TeamRoster = HashMap<String, Team>
 
 class QuizMaster {
 
-    private val handlers: MutableMap<String, Handler>
+    private val handlers: Map<String, Handler> = mapOf(
+            "nextQuestion" to NextQuestionHandler(this, questionAsker, buzzerManager),
+            "answer" to AnswerQuestionHandler(this, questionAsker),
+            "buzz" to BuzzerHandler(this, buzzerManager),
+            "score" to ScoreHandler(this)
+    )
+
     val teamRoster = TeamRoster()
     private var admin = Admin(null)
 
     private val requestLogger = Logger.of("requestLogger")
-
-    init {
-        handlers = HashMap<String, Handler>()
-        handlers.put("nextQuestion", NextQuestionHandler(this, questionAsker, buzzerManager))
-        handlers.put("answer", AnswerQuestionHandler(this, questionAsker))
-        handlers.put("buzz", BuzzerHandler(this, buzzerManager))
-        handlers.put("score", ScoreHandler(this))
-    }
 
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
@@ -57,20 +55,15 @@ class QuizMaster {
         notifyAdmin()
     }
 
-    @Throws(Exception::class)
     fun messageReceived(teamName: String, message: JsonNode) {
         val jsonMessage = message
         requestLogger.info("Json:" + Json.stringify(jsonMessage))
 
         val type = jsonMessage.get("type").asText()
         val targetTeam = jsonMessage.get("team").asText()
-        val handler = handlers[type] ?: NullHandler()
-        requestLogger.debug("Using handler ${handler.javaClass.name} for type ${type} and team ${teamName}")
 
-        requestLogger.debug("The current roster (${teamRoster.size}):")
-        teamRoster.keys.forEach { println(it) }
+        val handler = handlers[type] ?: NullHandler()
         val team = teamRoster[targetTeam] ?: return
-        requestLogger.debug("Found ${team} in roster")
 
         handler.handle(team, jsonMessage)
     }
