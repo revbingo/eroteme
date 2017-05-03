@@ -5,9 +5,9 @@ import play.Logger
 import play.libs.Json
 import java.util.*
 
-typealias TeamRoster = HashMap<String, Team>
-
 class QuizMaster {
+
+    private val requestLogger = Logger.of("requestLogger")
 
     private val handlers: Map<String, Handler> = mapOf(
             "nextQuestion" to NextQuestionHandler(this, questionAsker, buzzerManager),
@@ -16,37 +16,29 @@ class QuizMaster {
             "score" to ScoreHandler(this)
     )
 
-    val teamRoster = TeamRoster()
-    private var admin = Admin(null)
-
-    private val requestLogger = Logger.of("requestLogger")
+    val teamRoster = mutableMapOf<String, Team>()
+    private var admin: Admin? = null
 
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
 
-        var theTeam: Team? = teamRoster[teamName]
-        if (theTeam == null) {
-            theTeam = Team(teamName, out)
-        } else {
-            theTeam.setOut(out)
-        }
+        val theTeam: Team = teamRoster.getOrPut(teamName, { Team(teamName, out) })
+        theTeam.setOut(out)
 
-        teamRoster.put(teamName, theTeam)
         theTeam.notify(Optional.of<Any>(Domain.RegistrationResponse(theTeam)))
-        requestLogger.debug("Roster has ${teamRoster.size} teams now")
         notifyAdmin()
     }
 
     fun registerAdmin(outSocket: JsonWebSocket) {
         requestLogger.info("Admin join")
-        admin.destroy()
+        admin?.destroy()
         admin = Admin(outSocket)
         notifyAdmin()
     }
 
     fun deregisterAdmin() {
         requestLogger.info("Admin leave")
-        admin = Admin(null)
+        admin = null
     }
 
     fun leave(teamName: String) {
@@ -60,10 +52,9 @@ class QuizMaster {
         requestLogger.info("Json:" + Json.stringify(jsonMessage))
 
         val type = jsonMessage.get("type").asText()
-        val targetTeam = jsonMessage.get("team").asText()
 
         val handler = handlers[type] ?: NullHandler()
-        val team = teamRoster[targetTeam] ?: return
+        val team = teamRoster[teamName] ?: Team.nil()
 
         handler.handle(team, jsonMessage)
     }
@@ -75,15 +66,15 @@ class QuizMaster {
     }
 
     fun notifyTeams(obj: Optional<Any>) {
-        teamRoster.forEach { name, team -> team.notify(obj) }
+        teamRoster.forEach { _, team -> team.notify(obj) }
     }
 
     fun notifyAdmin() {
-        admin.notify(Optional.of<Any>(Domain.TeamListResponse(teamRoster.values)))
+        admin?.notify(Domain.TeamListResponse(teamRoster.values))
     }
 
-    fun notifyAdmin(obj: Optional<Any>) {
-        admin.notify(obj)
+    fun notifyAdmin(obj: Domain) {
+        admin?.notify(obj)
     }
 
     companion object {
