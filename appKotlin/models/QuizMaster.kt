@@ -22,8 +22,8 @@ class QuizMaster {
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
 
-        val theTeam: Team = teamRoster.getOrPut(teamName, { Team(teamName, out) })
-        theTeam.setOut(out)
+        val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out) })
+        theTeam.rebind(out)
 
         theTeam.notify(Optional.of<Any>(Domain.RegistrationResponse(theTeam)))
         notifyAdmin()

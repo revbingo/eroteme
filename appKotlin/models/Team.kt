@@ -31,7 +31,7 @@ class Team(val name: String?, private var out: JsonWebSocket?) {
         }
     }
 
-    fun setOut(out: JsonWebSocket) {
+    fun rebind(out: JsonWebSocket) {
         this.out = out
     }
 
