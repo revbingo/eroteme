@@ -22,7 +22,7 @@
         <appender-ref ref="APP_LOG" />
     </logger>
 
-    <logger name="requestLogger" level="info" additivity="false">
+    <logger name="requestLogger" level="debug" additivity="false">
         <appender-ref ref="APP_LOG" />
     </logger>
 </configuration>

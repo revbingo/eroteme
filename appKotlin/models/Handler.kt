@@ -18,10 +18,10 @@ class NullHandler : Handler {
 class ScoreHandler(private val quizMaster: QuizMaster) : Handler {
 
     override fun handle(team: Team, message: JsonNode) {
-        val teamThatScored = quizMaster.teamRoster.getOrDefault(message.get("team").asText(), Team.nil())
+        val teamThatScored = quizMaster.teamRoster[message.get("team").asText()] ?: return
         val delta = message.get("delta").asInt()
         teamThatScored.scored(delta)
-        quizMaster.notifyTeam(teamThatScored, Optional.of<Any>(Domain.Scored(teamThatScored.getScore())))
+        quizMaster.notifyTeam(teamThatScored, Optional.of<Any>(Domain.Scored(teamThatScored.score)))
         quizMaster.notifyAdmin()
     }
 }
@@ -31,7 +31,7 @@ class BuzzerHandler(private val quizMaster: QuizMaster, private val buzzerManage
     override fun handle(team: Team, message: JsonNode) {
         val responseOrder = this.buzzerManager.respond(team)
         team.buzzed(responseOrder)
-        val ack = Domain.BuzzAck(team.name, responseOrder)
+        val ack = Domain.BuzzAck(team.name ?: "", responseOrder)
         quizMaster.notifyTeam(team, Optional.of<Any>(ack))
         quizMaster.notifyAdmin()
     }
