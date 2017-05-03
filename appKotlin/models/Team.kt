@@ -1,7 +1,6 @@
 package models
 
 import play.libs.Json
-import java.util.*
 
 class Team(val name: String?, private var out: JsonWebSocket?) {
     var score = 0
@@ -25,14 +24,12 @@ class Team(val name: String?, private var out: JsonWebSocket?) {
         return this.buzzOrder > 0
     }
 
-    fun notify(obj: Optional<Any>) {
-        if (out != null && obj.isPresent) {
-            out!!.write(Json.toJson(obj.get()))
-        }
+    fun notify(msg: Domain) {
+        out?.write(Json.toJson(msg))
     }
 
-    fun rebind(out: JsonWebSocket) {
-        this.out = out
+    fun rebind(msg: JsonWebSocket) {
+        this.out = msg
     }
 
     companion object {

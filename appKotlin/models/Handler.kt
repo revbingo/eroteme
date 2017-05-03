@@ -2,7 +2,6 @@ package models
 
 import com.fasterxml.jackson.databind.JsonNode
 import play.Logger
-import java.util.*
 
 interface Handler {
     fun handle(team: Team?, message: JsonNode)
@@ -21,7 +20,7 @@ class ScoreHandler(private val quizMaster: QuizMaster) : Handler {
         val teamThatScored = quizMaster.teamRoster[message.get("team").asText()] ?: return
         val delta = message.get("delta").asInt()
         teamThatScored.scored(delta)
-        quizMaster.notifyTeam(teamThatScored, Optional.of<Any>(Domain.Scored(teamThatScored.score)))
+        quizMaster.notifyTeam(teamThatScored, Domain.Scored(teamThatScored.score))
         quizMaster.notifyAdmin()
     }
 }
@@ -34,7 +33,7 @@ class BuzzerHandler(private val quizMaster: QuizMaster, private val buzzerManage
         val responseOrder = this.buzzerManager.respond(team)
         team.buzzed(responseOrder)
         val ack = Domain.BuzzAck(team.name ?: "", responseOrder)
-        quizMaster.notifyTeam(team, Optional.of<Any>(ack))
+        quizMaster.notifyTeam(team, ack)
         quizMaster.notifyAdmin()
     }
 }
@@ -49,7 +48,7 @@ class NextQuestionHandler(private val quizMaster: QuizMaster, private val asker:
                 .stream()
                 .forEach { t -> t.resetBuzzer() }
 
-        quizMaster.notifyTeams(Optional.of<Any>(question))
+        quizMaster.notifyTeams(question)
         quizMaster.notifyAdmin()
     }
 }
@@ -64,7 +63,7 @@ class AnswerQuestionHandler(private val quizMaster: QuizMaster, private val aske
             if (correct) {
                 team.scored(1)
             }
-            quizMaster.notifyTeam(team, Optional.of<Any>(Domain.QuestionAnswerResponse(correct, team.score)))
+            quizMaster.notifyTeam(team, Domain.QuestionAnswerResponse(correct, team.score))
             quizMaster.notifyAdmin()
         } catch (t: Throwable) {
             t.printStackTrace()

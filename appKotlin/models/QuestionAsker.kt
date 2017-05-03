@@ -1,20 +1,17 @@
 package models
 
-import models.questions.BuzzerQuestion
-import models.questions.Question
-import java.util.ArrayList
-
 import play.Logger
+import java.util.*
 
 class QuestionAsker {
 
-    private val questions = ArrayList<Question>()
+    private val questions = ArrayList<Domain.Question>()
     private var questionCount = 0
 
-    fun nextQuestion(): Question {
+    fun nextQuestion(): Domain.Question {
         Logger.debug("Next question!")
         questionCount++
-        val question: Question = BuzzerQuestion(questionCount, "What time is it?")
+        val question: Domain.Question = Domain.BuzzerQuestion(questionCount, "What time is it?")
         questions.add(question)
         return question
     }

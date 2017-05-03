@@ -3,7 +3,6 @@ package models
 import com.fasterxml.jackson.databind.JsonNode
 import play.Logger
 import play.libs.Json
-import java.util.*
 
 class QuizMaster {
 
@@ -25,7 +24,7 @@ class QuizMaster {
         val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out) })
         theTeam.rebind(out)
 
-        theTeam.notify(Optional.of<Any>(Domain.RegistrationResponse(theTeam)))
+        theTeam.notify(Domain.RegistrationResponse(theTeam))
         notifyAdmin()
     }
 
@@ -59,22 +58,20 @@ class QuizMaster {
         handler.handle(team, jsonMessage)
     }
 
-    fun notifyTeam(team: Team, response: Optional<Any>) {
-        if (response.isPresent) {
-            team.notify(response)
-        }
+    fun notifyTeam(team: Team, response: Domain) {
+        team.notify(response)
     }
 
-    fun notifyTeams(obj: Optional<Any>) {
-        teamRoster.forEach { _, team -> team.notify(obj) }
+    fun notifyTeams(msg: Domain) {
+        teamRoster.values.forEach { it.notify(msg) }
     }
 
     fun notifyAdmin() {
         admin?.notify(Domain.TeamListResponse(teamRoster.values))
     }
 
-    fun notifyAdmin(obj: Domain) {
-        admin?.notify(obj)
+    fun notifyAdmin(msg: Domain) {
+        admin?.notify(msg)
     }
 
     companion object {
