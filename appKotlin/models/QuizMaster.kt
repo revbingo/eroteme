@@ -3,13 +3,14 @@ package models
 import com.fasterxml.jackson.databind.JsonNode
 import play.Logger
 import play.libs.Json
+import javax.inject.Inject
 
-class QuizMaster {
+class QuizMaster @Inject constructor(val questionAsker: OpenTriviaQuestionAsker) {
 
     private val requestLogger = Logger.of("requestLogger")
 
     private val pingManager = PingManager(this)
-    private val questionAsker = QuestionAsker()
+
     private val buzzerManager = BuzzerManager()
 
     private val handlers: Map<String, Handler> = mapOf(

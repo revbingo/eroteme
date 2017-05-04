@@ -8,7 +8,7 @@ class PingManager(private val quizMaster: QuizMaster): TeamSpecificHandler() {
     val pingCount = mutableMapOf<String, Int>()
 
     fun start() {
-        fixedRateTimer("ping", period = 5000) {
+        fixedRateTimer("ping", daemon = false, period = 5000) {
             ping()
         }
     }

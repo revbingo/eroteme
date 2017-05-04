@@ -18,7 +18,7 @@ sealed class Message(val type: String) {
 
     class QuestionAdminResponse(val question: Question): Message("currentQuestion")
 
-    abstract class Question(val answerType: AnswerType, val questionNumber: Int, val question: String): Message("question") {
+    abstract class Question(val answerType: AnswerType, val questionNumber: Int, val question: String, val answer: String): Message("question") {
         enum class AnswerType {
             SIMPLE, BUZZER
         }
@@ -26,7 +26,7 @@ sealed class Message(val type: String) {
         abstract fun checkAnswer(answer: String): Boolean
     }
 
-    class SimpleQuestion(questionNumber: Int, question: String, private val answer: String) : Question(Question.AnswerType.SIMPLE, questionNumber, question) {
+    class SimpleQuestion(questionNumber: Int, question: String, answer: String) : Question(Question.AnswerType.SIMPLE, questionNumber, question, answer) {
 
         override fun checkAnswer(answer: String): Boolean {
             play.Logger.debug("checking answer " + answer + " against " + this.answer)
@@ -34,7 +34,7 @@ sealed class Message(val type: String) {
         }
     }
 
-    class BuzzerQuestion(questionNumber: Int, question: String) : Question(AnswerType.BUZZER, questionNumber, question) {
+    class BuzzerQuestion(questionNumber: Int, question: String, answer: String) : Question(AnswerType.BUZZER, questionNumber, question, answer) {
 
         override fun checkAnswer(answer: String): Boolean {
             return false

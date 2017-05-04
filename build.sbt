@@ -9,6 +9,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
+  javaWs,
   filters
 )
 
