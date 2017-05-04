@@ -3,8 +3,9 @@
 	<h1>Teams:</h1>
 	<ul class="list-group" id="teams">
 	</ul>	
-	<a href="#" id="nextQuestion">Next Question</a>
-	
+	<a href="#" id="nextQuestionButton">Next Question</a>
+	<div id="nextQuestion"></div>
+
 	<script id="teamListTmpl" type="text/jsrender">
 		<li data-team-name="{{:name}}" class="team list-group-item {{if (buzzOrder < 999)}}buzzed{{/if}} {{if (status == 'AWOL') }}awol{{/if}}">
 			{{:name}}  
@@ -12,5 +13,10 @@
 			<span class="label label-warning">{{:score}}</span>
 			<button class="btn btn-default btn-danger minusScore">-</button>
 		</li>
+	</script>
+
+	<script id="nextQuestionTmpl" type="text/jsrender">
+		<span>{{:question}}</span>
+		<span>({{:answerType}})</span>
 	</script>
 }

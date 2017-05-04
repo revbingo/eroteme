@@ -12,6 +12,9 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 			if(obj.type == 'teamList') {
 				this_.model.updateTeams(obj.teams);
 				this_.view.displayTeamList();
+			} else if (obj.type == 'question') {
+				this_.model.nextQuestion = obj;
+				this_.view.displayNextQuestion();
 			}
 		};
 		
@@ -30,7 +33,8 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 		this.controller = controller;
 		this.model = model;
 		this.teamListTmpl = $.templates("#teamListTmpl");
-		
+		this.nextQuestionTmpl = $.templates("#nextQuestionTmpl");
+
 		this.displayTeamList = function() {
 			var sortedTeamList = this_.model.teams.sort(function(a,b) { 
 				return a.buzzOrder - b.buzzOrder; 
@@ -47,8 +51,14 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 				this_.controller.score($(this).parent("li").attr("data-team-name"), -1);
 			});
 		};
+
+		this.displayNextQuestion = function() {
+			var template = this_.nextQuestionTmpl.render(this_.model.nextQuestion);
+
+			$("#nextQuestion").html(template);
+		};
 		
-		$("#nextQuestion").click(function() {
+		$("#nextQuestionButton").click(function() {
 			this_.displayTeamList();
 			this_.controller.nextQuestion();
 		});
@@ -57,6 +67,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 	
 	function Model() {
 		this.teams = [];
+		this.nextQuestion = {};
 
 		this.updateTeams = function(teamList) {
 			this.teams = teamList;

@@ -61,6 +61,7 @@ class NextQuestionHandler(private val quizMaster: QuizMaster, private val asker:
         quizMaster.eachTeam { it.resetBuzzer() }
 
         quizMaster.notifyAllTeams(question)
+        quizMaster.notifyAdmin(question)
     }
 }
 
