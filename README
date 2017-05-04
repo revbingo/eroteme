@@ -1,4 +1,4 @@
 Eroteme
 =======
 
-This app is built with Play 2.3.8 and JDK8. To get started, just play run.  
+This app is built with Play 2.3.8 and JDK8 (you will need JDK8u101 or later due to root certificate issues with the OpenTrivia API). To get started, just play run.  
