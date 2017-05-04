@@ -62,15 +62,14 @@ class QuizMaster {
     }
 
     fun messageReceived(teamName: String, message: JsonNode) {
-        val jsonMessage = message
-        requestLogger.info("Json:" + Json.stringify(jsonMessage))
+        requestLogger.info("Json:" + Json.stringify(message))
 
-        val type = jsonMessage.get("type").asText()
+        val type = message.get("type").asText()
 
         val handler = handlers[type] ?: NullHandler()
         val team = teamRoster[teamName] ?: Team.nil()
 
-        handler.handle(team, jsonMessage)
+        handler.handle(team, message)
         notifyAdmin()
     }
 
