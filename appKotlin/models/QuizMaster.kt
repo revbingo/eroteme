@@ -33,6 +33,7 @@ class QuizMaster {
         val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out) })
         theTeam.rebind(out)
 
+        statusChange(theTeam.name, Team.Status.LIVE)
         theTeam.notify(Message.RegistrationResponse(theTeam))
         notifyAdmin()
     }
@@ -85,5 +86,9 @@ class QuizMaster {
 
     fun notifyAdmin() {
         admin?.notify(Message.TeamListResponse(teamRoster.values))
+    }
+
+    fun notifyAdmin(message: Message) {
+        admin?.notify(message)
     }
 }
