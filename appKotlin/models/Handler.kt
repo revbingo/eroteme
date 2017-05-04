@@ -38,7 +38,6 @@ class ScoreHandler(private val quizMaster: QuizMaster) : AdminHandler() {
         val delta = message.get("delta").asInt()
         teamThatScored.scored(delta)
         quizMaster.notifyTeam(teamThatScored, Message.Scored(teamThatScored.score))
-        quizMaster.notifyAdmin()
     }
 }
 
@@ -49,7 +48,6 @@ class BuzzerHandler(private val quizMaster: QuizMaster, private val buzzerManage
         team.buzzed(responseOrder)
         val ack = Message.BuzzAck(team.name, responseOrder)
         quizMaster.notifyTeam(team, ack)
-        quizMaster.notifyAdmin()
     }
 }
 
@@ -62,8 +60,7 @@ class NextQuestionHandler(private val quizMaster: QuizMaster, private val asker:
 
         quizMaster.eachTeam { it.resetBuzzer() }
 
-        quizMaster.notifyTeams(question)
-        quizMaster.notifyAdmin()
+        quizMaster.notifyAllTeams(question)
     }
 }
 
@@ -75,7 +72,5 @@ class AnswerQuestionHandler(private val quizMaster: QuizMaster, private val aske
             team.scored(1)
         }
         quizMaster.notifyTeam(team, Message.QuestionAnswerResponse(correct, team.score))
-        quizMaster.notifyAdmin()
-
     }
 }

@@ -71,13 +71,14 @@ class QuizMaster {
         val team = teamRoster[teamName] ?: Team.nil()
 
         handler.handle(team, jsonMessage)
+        notifyAdmin()
     }
 
     fun eachTeam(callback: (Team) -> Unit) {
         teamRoster.values.forEach(callback)
     }
 
-    fun notifyTeams(msg: Message) = eachTeam { it.notify(msg) }
+    fun notifyAllTeams(msg: Message) = eachTeam { it.notify(msg) }
 
     fun notifyTeam(team: Team, response: Message) {
         team.notify(response)
