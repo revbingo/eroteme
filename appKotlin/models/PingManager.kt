@@ -1,10 +1,17 @@
 package models
 
 import com.fasterxml.jackson.databind.JsonNode
+import kotlin.concurrent.fixedRateTimer
 
 class PingManager(private val quizMaster: QuizMaster): TeamSpecificHandler() {
 
     val pingCount = mutableMapOf<String, Int>()
+
+    fun start() {
+        fixedRateTimer("ping", period = 5000) {
+            ping()
+        }
+    }
 
     fun ping() {
         checkTimeouts()
@@ -18,14 +25,14 @@ class PingManager(private val quizMaster: QuizMaster): TeamSpecificHandler() {
 
     fun checkTimeouts() {
         pingCount.filter { it.value > 2 }.forEach { teamName, _ ->
-            quizMaster.awol(teamName)
+            quizMaster.statusChange(teamName, Team.Status.AWOL)
         }
 
         pingCount.filter { it.value > 10 }.forEach { teamName, _ ->
             play.Logger.info("Team $teamName have been removed - timeout")
 
             pingCount.remove(teamName)
-            quizMaster.leave(teamName)
+            quizMaster.statusChange(teamName, Team.Status.GONE)
         }
     }
 

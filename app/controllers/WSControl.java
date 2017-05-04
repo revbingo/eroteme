@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.JsonWebSocket;
 import models.QuizMaster;
+import models.Team;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.LegacyWebSocket;
@@ -32,7 +33,7 @@ public class WSControl extends Controller {
 				}
 			});
 
-			in.onClose(() -> quizMaster.awol(teamName));
+			in.onClose(() -> quizMaster.statusChange(teamName, Team.Status.AWOL));
 		});
 	}
 	

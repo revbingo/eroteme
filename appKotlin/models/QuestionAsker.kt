@@ -11,7 +11,7 @@ class QuestionAsker {
     fun nextQuestion(): Message.Question {
         Logger.debug("Next question!")
         questionCount++
-        val question: Message.Question = Message.BuzzerQuestion(questionCount, "What time is it?")
+        val question = Message.BuzzerQuestion(questionCount, "What time is it?")
         questions.add(question)
         return question
     }

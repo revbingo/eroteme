@@ -44,6 +44,6 @@ class Team(val name: String, private var out: JsonWebSocket?) {
     }
 
     enum class Status {
-        LIVE, AWOL
+        LIVE, AWOL, GONE
     }
 }

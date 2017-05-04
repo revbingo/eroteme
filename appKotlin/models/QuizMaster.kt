@@ -3,12 +3,14 @@ package models
 import com.fasterxml.jackson.databind.JsonNode
 import play.Logger
 import play.libs.Json
-import kotlin.concurrent.fixedRateTimer
 
 class QuizMaster {
 
     private val requestLogger = Logger.of("requestLogger")
+
     private val pingManager = PingManager(this)
+    private val questionAsker = QuestionAsker()
+    private val buzzerManager = BuzzerManager()
 
     private val handlers: Map<String, Handler> = mapOf(
             "nextQuestion" to NextQuestionHandler(this, questionAsker, buzzerManager),
@@ -22,10 +24,9 @@ class QuizMaster {
     private var admin: Admin? = null
 
     init {
-        fixedRateTimer("ping", period = 5000) {
-            pingManager.ping()
-        }
+        pingManager.start()
     }
+
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
 
@@ -48,14 +49,15 @@ class QuizMaster {
         admin = null
     }
 
-    fun awol(teamName: String) {
-        teamRoster[teamName]?.status = Team.Status.AWOL
-        notifyAdmin()
-    }
+    fun statusChange(teamName: String, status: Team.Status) {
+        val team = teamRoster[teamName] ?: return
+        team.status = status
 
-    fun leave(teamName: String) {
-        requestLogger.info("Leave:" + teamName)
-        teamRoster.remove(teamName)
+        if(status == Team.Status.GONE) {
+            teamRoster.remove(teamName)
+        }
+
+        requestLogger.info("$teamName is $status")
         notifyAdmin()
     }
 
@@ -83,15 +85,5 @@ class QuizMaster {
 
     fun notifyAdmin() {
         admin?.notify(Message.TeamListResponse(teamRoster.values))
-    }
-
-    fun notifyAdmin(msg: Message) {
-        admin?.notify(msg)
-    }
-
-    companion object {
-
-        private val questionAsker = QuestionAsker()
-        private val buzzerManager = BuzzerManager()
     }
 }
