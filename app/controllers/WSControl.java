@@ -16,9 +16,6 @@ public class WSControl extends Controller {
 	@Inject
 	private QuizMaster quizMaster;
 
-	@Inject
-	private Logger logger;
-
 	public LegacyWebSocket<JsonNode> bind(String teamName) {
 		return WebSocket.whenReady((in,out) -> {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
@@ -29,7 +26,7 @@ public class WSControl extends Controller {
 				try {
 					quizMaster.messageReceived(teamName, json);
 				} catch(Exception e) {
-					logger.error(e.getMessage(), e);
+					Logger.error(e.getMessage(), e);
 				}
 			});
 
@@ -51,7 +48,7 @@ public class WSControl extends Controller {
 				try {
 					quizMaster.messageReceived("admin", json);
 				} catch(Exception e) {
-					logger.error(e.getMessage(), e);
+					Logger.error(e.getMessage(), e);
 				}
 			});
 		});
