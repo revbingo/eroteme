@@ -1,9 +1,10 @@
 package models
 
 import com.fasterxml.jackson.databind.JsonNode
+import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
-class PingManager(private val quizMaster: QuizMaster): TeamSpecificHandler() {
+class PingManager @Inject constructor(val quizMaster: QuizMaster): TeamSpecificHandler() {
 
     val pingCount = mutableMapOf<String, Int>()
 

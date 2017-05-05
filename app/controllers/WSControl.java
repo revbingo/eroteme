@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import models.InboundMessageHandler;
 import models.JsonWebSocket;
 import models.QuizMaster;
 import models.Team;
@@ -16,6 +17,9 @@ public class WSControl extends Controller {
 	@Inject
 	private QuizMaster quizMaster;
 
+	@Inject
+	private InboundMessageHandler messageHandler;
+
 	public LegacyWebSocket<JsonNode> bind(String teamName) {
 		return WebSocket.whenReady((in,out) -> {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
@@ -24,7 +28,7 @@ public class WSControl extends Controller {
 			
 			in.onMessage((json) -> {
 				try {
-					quizMaster.messageReceived(teamName, json);
+					messageHandler.messageReceived(teamName, json);
 				} catch(Exception e) {
 					Logger.error(e.getMessage(), e);
 				}
@@ -46,7 +50,7 @@ public class WSControl extends Controller {
 			
 			in.onMessage((json) -> {
 				try {
-					quizMaster.messageReceived("admin", json);
+					messageHandler.messageReceived("admin", json);
 				} catch(Exception e) {
 					Logger.error(e.getMessage(), e);
 				}

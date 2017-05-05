@@ -1,32 +1,15 @@
 package models
 
-import com.fasterxml.jackson.databind.JsonNode
 import play.Logger
-import play.libs.Json
-import javax.inject.Inject
+import javax.inject.Singleton
 
-class QuizMaster @Inject constructor(val questionAsker: OpenTriviaQuestionAsker) {
+@Singleton
+class QuizMaster {
 
     private val requestLogger = Logger.of("requestLogger")
 
-    private val pingManager = PingManager(this)
-
-    private val buzzerManager = BuzzerManager()
-
-    private val handlers: Map<String, Handler> = mapOf(
-            "nextQuestion" to NextQuestionHandler(this, questionAsker, buzzerManager),
-            "answer" to AnswerQuestionHandler(this, questionAsker),
-            "buzz" to BuzzerHandler(this, buzzerManager),
-            "score" to ScoreHandler(this),
-            "pong" to pingManager
-    )
-
     val teamRoster = mutableMapOf<String, Team>()
     private var admin: Admin? = null
-
-    init {
-        pingManager.start()
-    }
 
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
@@ -60,18 +43,6 @@ class QuizMaster @Inject constructor(val questionAsker: OpenTriviaQuestionAsker)
         }
 
         requestLogger.info("$teamName is $status")
-        notifyAdmin()
-    }
-
-    fun messageReceived(teamName: String, message: JsonNode) {
-        requestLogger.info("Json:" + Json.stringify(message))
-
-        val type = message.get("type").asText()
-
-        val handler = handlers[type] ?: NullHandler()
-        val team = teamRoster[teamName] ?: Team.nil()
-
-        handler.handle(team, message)
         notifyAdmin()
     }
 

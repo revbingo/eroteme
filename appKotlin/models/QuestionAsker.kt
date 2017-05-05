@@ -8,6 +8,7 @@ import play.libs.ws.WSClient
 import play.libs.ws.WSResponse
 import java.util.concurrent.CompletionStage
 import javax.inject.Inject
+import javax.inject.Singleton
 
 abstract class QuestionAsker {
 
@@ -15,7 +16,9 @@ abstract class QuestionAsker {
     private var questionCount = 0
 
     fun nextQuestion(): Message.Question {
+        Logger.info("Getting next question")
         if(questions.isEmpty()) questions = loadQuestions()
+        Logger.info("Next q is ${questions.get(questionCount).question}")
         return questions.get(questionCount++)
     }
 
@@ -26,6 +29,7 @@ abstract class QuestionAsker {
     abstract fun loadQuestions(): List<Message.Question>
 }
 
+@Singleton
 class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsker() {
 
     override fun loadQuestions(): List<Message.Question> {
@@ -39,6 +43,17 @@ class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsk
         return response.results.mapIndexed { index, otquestion ->
             Message.BuzzerQuestion(index, otquestion.question, otquestion.correct_answer)
         }
+    }
+}
+
+@Singleton
+class FixedQuestionAsker: QuestionAsker() {
+    override fun loadQuestions(): List<Message.Question> {
+       return listOf(Message.SimpleQuestion(0, "what's the first number?", "one"),
+               Message.SimpleQuestion(0, "what's the second number?", "two"),
+               Message.SimpleQuestion(0, "what's the third number?", "three"),
+               Message.SimpleQuestion(0, "what's the fourth number?", "four"),
+               Message.SimpleQuestion(0, "what's the fifth number?", "five"))
     }
 }
 
