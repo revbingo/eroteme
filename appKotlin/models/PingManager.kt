@@ -1,16 +1,23 @@
 package models
 
 import com.fasterxml.jackson.databind.JsonNode
+import play.inject.ApplicationLifecycle
+import java.util.concurrent.CompletableFuture
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
-class PingManager @Inject constructor(val quizMaster: QuizMaster): TeamSpecificHandler() {
+class PingManager @Inject constructor(val quizMaster: QuizMaster, val lifecycle: ApplicationLifecycle): TeamSpecificHandler() {
 
     val pingCount = mutableMapOf<String, Int>()
 
     fun start() {
-        fixedRateTimer("ping", daemon = false, period = 5000) {
+        val timer = fixedRateTimer("ping", daemon = true, period = 5000) {
             ping()
+        }
+
+        lifecycle.addStopHook {
+            timer.cancel()
+            CompletableFuture.completedFuture(null)
         }
     }
 
