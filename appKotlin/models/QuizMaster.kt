@@ -48,6 +48,7 @@ class QuizMaster {
 
     fun reset() {
         eachTeam { it.resetBuzzer() }
+        notifyAllTeams(Message.Reset())
     }
 
     fun eachTeam(callback: (Team) -> Unit) {

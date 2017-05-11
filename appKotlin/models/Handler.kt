@@ -76,7 +76,8 @@ class AnswerQuestionHandler @Inject constructor(private val quizMaster: QuizMast
                 if (correct) {
                     team.scored(1)
                 }
-                quizMaster.notifyTeam(team, Message.QuestionAnswerResponse(correct, team.score))
+                quizMaster.notifyTeam(team, Message.Scored(team.score))
+                quizMaster.notifyAllTeams(Message.QuestionAnswered(team, correct))
             }
             "voice" -> {
                 team.scored(1)

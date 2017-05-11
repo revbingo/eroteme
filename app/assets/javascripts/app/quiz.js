@@ -14,8 +14,8 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 				var json = JSON.parse(event.data);
 			//	this_.view.debug(json);
 				
-				if(json.type == "answerResponse") {
-					this_.model.answerReceived(json);
+				if(json.type == "questionAnswered") {
+					this_.model.questionAnswered(json);
 					this_.view.displayAnswer();
 					this_.view.updateScore();
 				} else if (json.type == "scored") {
@@ -26,6 +26,8 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 					this_.view.updateScore();
                 } else if (json.type == "ping") {
                     this_.socket.send(JSON.stringify(new Pong()));
+                } else if (json.type == "reset") {
+                     this_.view.reset();
 				} else {
 					if(json.answerType) {
 						this_.model.nextQuestion(json);
@@ -69,7 +71,11 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.updateScore = function() {
 			$("#score").html(this_.model.teamScore);
 		};
-		
+
+		this.reset = function() {
+            $("#answerArea").empty();
+		};
+
 		this.SIMPLE = function(currentQuestion) {
 			$("#questionArea").css("color", "white");
 			$("#questionArea").html(this_.model.currentQuestion.questionNumber + ": " + this_.model.currentQuestion.question);
@@ -105,8 +111,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 			this_.currentQuestion = question;
 		};
 		
-		this.answerReceived = function(answer) {
-			this_.teamScore = answer.score;
+		this.questionAnswered = function(answer) {
 			this_.questionCorrect = answer.correct;
 		};
 		

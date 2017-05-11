@@ -2,7 +2,7 @@ package models
 
 sealed class Message(val type: String) {
 
-    class QuestionAnswerResponse(val correct: Boolean, val score: Int): Message("answerResponse")
+    class QuestionAnswered(val team: Team, val correct: Boolean): Message("questionAnswered")
 
     class RegistrationResponse(val team: Team): Message("registrationResponse")
 
@@ -12,7 +12,9 @@ sealed class Message(val type: String) {
 
     class Scored(val score: Int): Message("scored")
 
-    class Ping() : Message("ping")
+    class Ping : Message("ping")
+
+    class Reset : Message("reset")
 
     class ErrorResponse(val message: String): Message("error")
 
@@ -40,6 +42,4 @@ sealed class Message(val type: String) {
             return false
         }
     }
-
-
 }
