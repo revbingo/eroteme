@@ -49,11 +49,39 @@ class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsk
 @Singleton
 class FixedQuestionAsker: QuestionAsker() {
     override fun loadQuestions(): List<Message.Question> {
-       return listOf(Message.SimpleQuestion(0, "what's the first number?", "one"),
-               Message.SimpleQuestion(0, "what's the second number?", "two"),
-               Message.SimpleQuestion(0, "what's the third number?", "three"),
-               Message.SimpleQuestion(0, "what's the fourth number?", "four"),
-               Message.SimpleQuestion(0, "what's the fifth number?", "five"))
+       return listOf(Message.SimpleQuestion(1, "what's the first number?", "one"),
+               Message.SimpleQuestion(2, "what's the second number?", "two"),
+               Message.SimpleQuestion(3, "what's the third number?", "three"),
+               Message.SimpleQuestion(4, "what's the fourth number?", "four"),
+               Message.SimpleQuestion(5, "what's the fifth number?", "five"))
+    }
+}
+
+@Singleton
+class BuzzerQuestionAsker: QuestionAsker() {
+    override fun loadQuestions(): List<Message.Question> {
+        return listOf(Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", ""),
+                Message.BuzzerQuestion(1, "", "")
+                )
     }
 }
 

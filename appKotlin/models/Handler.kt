@@ -69,7 +69,9 @@ class NextQuestionHandler @Inject constructor(private val quizMaster: QuizMaster
 class AnswerQuestionHandler @Inject constructor(private val quizMaster: QuizMaster, private val asker: QuestionAsker) : TeamSpecificHandler() {
 
     override fun handleTeamMessage(team: Team, message: JsonNode) {
+        println("checking answer")
         val correct = asker.answer(message.get("questionNumber").asInt(), message.get("answer").asText())
+        println("Team ${team.name} gave answer ${message.get("answer").asText()}, which was ${if(correct) "correct" else "incorrect"}")
         if (correct) {
             team.scored(1)
         }
