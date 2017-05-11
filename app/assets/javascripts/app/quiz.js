@@ -17,7 +17,6 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 				if(json.type == "questionAnswered") {
 					this_.model.questionAnswered(json);
 					this_.view.displayAnswer();
-					this_.view.updateScore();
 				} else if (json.type == "scored") {
 					this_.model.scored(json.score);
 					this_.view.updateScore();
@@ -70,6 +69,8 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		
 		this.updateScore = function() {
 			$("#score").html(this_.model.teamScore);
+			var audio = new Audio("/assets/sounds/cheer.wav");
+			audio.play();
 		};
 
 		this.reset = function() {
@@ -91,6 +92,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 			$("#answerArea").html(buzzerTmp.render([{}]));
 			$("#buzzer").click(function() {
 				$("#answerArea").html("...");
+				new Audio("/assets/sounds/ping.wav").play();
 				controller.buzz(currentQuestion.questionNumber);
 			});
 		};
