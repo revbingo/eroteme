@@ -8,14 +8,20 @@
 
 	<script id="teamListTmpl" type="text/jsrender">
 		<li data-team-name="{{:name}}" class="team list-group-item {{if (buzzOrder < 999)}}buzzed{{/if}} {{if (status == 'AWOL') }}awol{{/if}}">
-			{{:name}}  
-			<button class="btn btn-default btn-success plusScore">+</button>
-			<span class="label label-warning">{{:score}}</span>
-			<button class="btn btn-default btn-danger minusScore">-</button>
+			<div class="score">
+				<button class="btn btn-default btn-success plusScore"><i class="fa fa-plus"></i></button>
+				<span class="label label-warning">{{:score}}</span>
+				<button class="btn btn-default btn-danger minusScore"><i class="fa fa-minus"></i></button>
+			</div>
+			<div class="name">
+				{{:name}}
+			</div>
+			<div class="answer">
 			{{if (buzzOrder < 999)}}
-				<button class="btn btn-default btn-success correct">Y</button>
-				<button class="btn btn-default btn-success incorrect">N</button>
+				<button class="btn btn-default btn-success correct"><i class="fa fa-check"></i></button>
+				<button class="btn btn-default btn-success incorrect"><i class="fa fa-times"></i></button>
 			{{/if}}
+			</div>
 		</li>
 	</script>
 

@@ -51,20 +51,20 @@ require(["jquery", "bootstrap", "jsrender"], function($){
             var template = this_.teamListTmpl.render(sortedTeamList);
             $("#teams").html(template);
 
-            $("#teams > li > .plusScore").click(function() {
-                this_.controller.score($(this).parent("li").attr("data-team-name"), 1);
+            $(".plusScore").click(function() {
+                this_.controller.score($(this).closest("li").attr("data-team-name"), 1);
             });
 
-            $("#teams > li > .minusScore").click(function() {
-                this_.controller.score($(this).parent("li").attr("data-team-name"), -1);
+            $(".minusScore").click(function() {
+                this_.controller.score($(this).closest("li").attr("data-team-name"), -1);
             });
 
-            $("#teams > li > .correct").click(function() {
-                this_.controller.correct($(this).parent("li").attr("data-team-name"));
+            $(".correct").click(function() {
+                this_.controller.correct($(this).closest("li").attr("data-team-name"));
             });
 
-            $("#teams > li > .incorrect").click(function() {
-                this_.controller.incorrect($(this).parent("li").attr("data-team-name"));
+            $(".incorrect").click(function() {
+                this_.controller.incorrect($(this).closest("li").attr("data-team-name"));
             });
         };
 

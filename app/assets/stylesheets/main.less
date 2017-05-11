@@ -11,12 +11,29 @@
 	color: #333;
 }
 
-li.buzzed {
-	background-color: yellow;
+li {
+  height: 60px;
+  &.buzzed {
+    background-color: yellow;
+  }
+  &.awol {
+    background-color: grey;
+  }
 }
 
-li.awol {
-    background-color: grey;
+.score {
+    float: left;
+    width: 20%;
+}
+
+.name {
+    float: left;
+    width: 60%;
+}
+
+.answer {
+    width: 20%;
+    float: right;
 }
 
 .btn:hover {
