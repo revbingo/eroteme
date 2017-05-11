@@ -46,6 +46,10 @@ class QuizMaster {
         notifyAdmin()
     }
 
+    fun reset() {
+        eachTeam { it.resetBuzzer() }
+    }
+
     fun eachTeam(callback: (Team) -> Unit) {
         teamRoster.values.forEach(callback)
     }

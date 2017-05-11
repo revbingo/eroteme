@@ -50,7 +50,8 @@ public class WSControl extends Controller {
 			
 			in.onMessage((json) -> {
 				try {
-					messageHandler.messageReceived("admin", json);
+					String relevantTeam = (json.get("team") != null) ? json.get("team").asText() : "admin";
+					messageHandler.messageReceived(relevantTeam, json);
 				} catch(Exception e) {
 					Logger.error(e.getMessage(), e);
 				}

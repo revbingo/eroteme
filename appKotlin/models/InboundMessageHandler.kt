@@ -17,6 +17,7 @@ class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster, next
     private val handlers: Map<String, Handler> = mapOf(
             "nextQuestion" to nextQuestionHandler,
             "answer" to answerQuestionHandler,
+            "correctAnswer" to answerQuestionHandler,
             "buzz" to buzzerHandler,
             "score" to scoreHandler,
             "pong" to pingManager

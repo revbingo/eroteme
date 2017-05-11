@@ -12,6 +12,10 @@
 			<button class="btn btn-default btn-success plusScore">+</button>
 			<span class="label label-warning">{{:score}}</span>
 			<button class="btn btn-default btn-danger minusScore">-</button>
+			{{if (buzzOrder < 999)}}
+				<button class="btn btn-default btn-success correct">Y</button>
+				<button class="btn btn-default btn-success incorrect">N</button>
+			{{/if}}
 		</li>
 	</script>
 
