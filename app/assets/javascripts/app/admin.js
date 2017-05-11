@@ -27,7 +27,11 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         };
 
         this.correct = function(teamName) {
-            this_.socket.send(JSON.stringify(new CorrectAnswer(teamName)));
+            this_.socket.send(JSON.stringify(new Answer(teamName, true)));
+        };
+
+        this.incorrect = function(teamName) {
+            this_.socket.send(JSON.stringify(new Answer(teamName, false)));
         };
 
     }
@@ -96,9 +100,10 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         this.delta = delta;
     }
 
-    function CorrectAnswer(teamName) {
-        this.type = "correctAnswer";
+    function Answer(teamName, correct) {
+        this.type = "answer";
         this.team = teamName;
         this.answerType = "voice";
+        this.answerCorrect = correct;
     }
 });

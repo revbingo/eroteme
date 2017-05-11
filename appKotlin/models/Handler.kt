@@ -80,9 +80,14 @@ class AnswerQuestionHandler @Inject constructor(private val quizMaster: QuizMast
                 quizMaster.notifyAllTeams(Message.QuestionAnswered(team, correct))
             }
             "voice" -> {
-                team.scored(1)
-                quizMaster.notifyTeam(team, Message.Scored(team.score))
-                quizMaster.reset()
+                val correct = message.get("answerCorrect").asBoolean()
+                if(correct) {
+                    team.scored(1)
+                    quizMaster.notifyTeam(team, Message.Scored(team.score))
+                    quizMaster.reset()
+                } else {
+                    team.resetBuzzer()
+                }
             }
         }
     }
