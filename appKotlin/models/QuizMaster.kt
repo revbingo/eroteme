@@ -38,7 +38,7 @@ class QuizMaster {
         val team = teamRoster[teamName] ?: return
         team.status = status
 
-        if(status == Team.Status.GONE) {
+        if (status == Team.Status.GONE) {
             teamRoster.remove(teamName)
         }
 
@@ -51,21 +51,13 @@ class QuizMaster {
         notifyAllTeams(Event.Reset())
     }
 
-    fun eachTeam(callback: (Team) -> Unit) {
-        teamRoster.values.forEach(callback)
-    }
+    fun eachTeam(callback: (Team) -> Unit) = teamRoster.values.forEach(callback)
 
     fun notifyAllTeams(msg: Event) = eachTeam { it.notify(msg) }
 
-    fun notifyTeam(team: Team, event: Event) {
-        team.notify(event)
-    }
+    fun notifyTeam(team: Team, event: Event) = team.notify(event)
 
-    fun notifyAdmin() {
-        admin?.notify(Event.TeamListResponse(teamRoster.values))
-    }
+    fun notifyAdmin() = admin?.notify(Event.TeamListResponse(teamRoster.values))
 
-    fun notifyAdmin(event: Event) {
-        admin?.notify(event)
-    }
+    fun notifyAdmin(event: Event) = admin?.notify(event)
 }
