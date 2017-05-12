@@ -8,9 +8,11 @@ sealed class Event(val type: String) {
 
     class TeamListResponse(val teams: Collection<Team>): Event("teamList")
 
+    class Buzz(val team: Team)
+
     class BuzzAck(val teamName: String, val responseOrder: Int): Event("buzzAck")
 
-    class Scored(val score: Int): Event("scored")
+    class Scored(val team: Team, val delta: Int): Event("scored")
 
     class Ping : Event("ping")
 

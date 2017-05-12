@@ -18,7 +18,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 					this_.model.questionAnswered(json);
 					this_.view.displayAnswer();
 				} else if (json.type == "scored") {
-					this_.model.scored(json.score);
+					this_.model.scored(json.team.score);
 					this_.view.updateScore();
 				} else if (json.type == "registrationResponse") {
 					this_.model.scored(json.team.score);

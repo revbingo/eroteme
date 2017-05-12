@@ -2,9 +2,10 @@ package models
 
 import play.Logger
 import javax.inject.Singleton
+import javax.inject.Inject
 
 @Singleton
-class QuizMaster {
+class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
 
     private val requestLogger = Logger.of("requestLogger")
 
@@ -49,6 +50,19 @@ class QuizMaster {
     fun reset() {
         eachTeam { it.resetBuzzer() }
         notifyAllTeams(Event.Reset())
+    }
+
+    fun teamBuzzed(buzzEvent: Event.Buzz) {
+        val team = buzzEvent.team
+        val responseOrder = buzzerManager.respond(team)
+        team.buzzed(responseOrder)
+        val ack = Event.BuzzAck(team.name, responseOrder)
+        notifyTeam(team, ack)
+    }
+
+    fun teamScored(scoreEvent: Event.Scored) {
+        scoreEvent.team.scored(scoreEvent.delta)
+        notifyTeam(scoreEvent.team, Event.Scored(scoreEvent.team, scoreEvent.delta))
     }
 
     fun eachTeam(callback: (Team) -> Unit) = teamRoster.values.forEach(callback)
