@@ -12,10 +12,10 @@ import javax.inject.Singleton
 
 abstract class QuestionAsker {
 
-    private var questions = listOf<Message.Question>()
+    private var questions = listOf<Event.Question>()
     private var questionCount = 0
 
-    fun nextQuestion(): Message.Question {
+    fun nextQuestion(): Event.Question {
         Logger.info("Getting next question")
         if(questions.isEmpty()) questions = loadQuestions()
         Logger.info("Next q is ${questions.get(questionCount).question}")
@@ -26,13 +26,13 @@ abstract class QuestionAsker {
         return questions[questionNumber - 1].checkAnswer(answer)
     }
 
-    abstract fun loadQuestions(): List<Message.Question>
+    abstract fun loadQuestions(): List<Event.Question>
 }
 
 @Singleton
 class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsker() {
 
-    override fun loadQuestions(): List<Message.Question> {
+    override fun loadQuestions(): List<Event.Question> {
         Logger.info("Fetching questions from OpenTrivia")
         val request = ws.url("http://opentdb.com/api.php").setQueryParameter("amount", "50")
         val responsePromise: CompletionStage<OpenTriviaResponse> = request.get().thenApply<JsonNode>(WSResponse::asJson).thenApply { jsonNode ->
@@ -41,46 +41,46 @@ class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsk
 
         val response = responsePromise.toCompletableFuture().get()
         return response.results.mapIndexed { index, otquestion ->
-            Message.BuzzerQuestion(index, otquestion.question, otquestion.correct_answer)
+            Event.BuzzerQuestion(index, otquestion.question, otquestion.correct_answer)
         }
     }
 }
 
 @Singleton
 class FixedQuestionAsker: QuestionAsker() {
-    override fun loadQuestions(): List<Message.Question> {
-       return listOf(Message.SimpleQuestion(1, "what's the first number?", "one"),
-               Message.SimpleQuestion(2, "what's the second number?", "two"),
-               Message.SimpleQuestion(3, "what's the third number?", "three"),
-               Message.SimpleQuestion(4, "what's the fourth number?", "four"),
-               Message.SimpleQuestion(5, "what's the fifth number?", "five"))
+    override fun loadQuestions(): List<Event.Question> {
+       return listOf(Event.SimpleQuestion(1, "what's the first number?", "one"),
+               Event.SimpleQuestion(2, "what's the second number?", "two"),
+               Event.SimpleQuestion(3, "what's the third number?", "three"),
+               Event.SimpleQuestion(4, "what's the fourth number?", "four"),
+               Event.SimpleQuestion(5, "what's the fifth number?", "five"))
     }
 }
 
 @Singleton
 class BuzzerQuestionAsker: QuestionAsker() {
-    override fun loadQuestions(): List<Message.Question> {
-        return listOf(Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", ""),
-                Message.BuzzerQuestion(1, "", "")
+    override fun loadQuestions(): List<Event.Question> {
+        return listOf(Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", ""),
+                Event.BuzzerQuestion(1, "", "")
                 )
     }
 }

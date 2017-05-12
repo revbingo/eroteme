@@ -18,7 +18,7 @@ class QuizMaster {
         theTeam.rebind(out)
 
         statusChange(theTeam.name, Team.Status.LIVE)
-        theTeam.notify(Message.RegistrationResponse(theTeam))
+        theTeam.notify(Event.RegistrationResponse(theTeam))
         notifyAdmin()
     }
 
@@ -48,24 +48,24 @@ class QuizMaster {
 
     fun reset() {
         eachTeam { it.resetBuzzer() }
-        notifyAllTeams(Message.Reset())
+        notifyAllTeams(Event.Reset())
     }
 
     fun eachTeam(callback: (Team) -> Unit) {
         teamRoster.values.forEach(callback)
     }
 
-    fun notifyAllTeams(msg: Message) = eachTeam { it.notify(msg) }
+    fun notifyAllTeams(msg: Event) = eachTeam { it.notify(msg) }
 
-    fun notifyTeam(team: Team, response: Message) {
-        team.notify(response)
+    fun notifyTeam(team: Team, event: Event) {
+        team.notify(event)
     }
 
     fun notifyAdmin() {
-        admin?.notify(Message.TeamListResponse(teamRoster.values))
+        admin?.notify(Event.TeamListResponse(teamRoster.values))
     }
 
-    fun notifyAdmin(message: Message) {
-        admin?.notify(message)
+    fun notifyAdmin(event: Event) {
+        admin?.notify(event)
     }
 }

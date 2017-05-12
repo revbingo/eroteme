@@ -26,7 +26,7 @@ class Team(val name: String, private var out: JsonWebSocket?) {
         return this.buzzOrder > 0
     }
 
-    fun notify(msg: Message) {
+    fun notify(msg: Event) {
         out?.write(Json.toJson(msg))
     }
 

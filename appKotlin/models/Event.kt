@@ -1,26 +1,22 @@
 package models
 
-sealed class Message(val type: String) {
+sealed class Event(val type: String) {
 
-    class QuestionAnswered(val team: Team, val correct: Boolean): Message("questionAnswered")
+    class QuestionAnswered(val team: Team, val correct: Boolean): Event("questionAnswered")
 
-    class RegistrationResponse(val team: Team): Message("registrationResponse")
+    class RegistrationResponse(val team: Team): Event("registrationResponse")
 
-    class TeamListResponse(val teams: Collection<Team>): Message("teamList")
+    class TeamListResponse(val teams: Collection<Team>): Event("teamList")
 
-    class BuzzAck(val teamName: String, val responseOrder: Int): Message("buzzAck")
+    class BuzzAck(val teamName: String, val responseOrder: Int): Event("buzzAck")
 
-    class Scored(val score: Int): Message("scored")
+    class Scored(val score: Int): Event("scored")
 
-    class Ping : Message("ping")
+    class Ping : Event("ping")
 
-    class Reset : Message("reset")
+    class Reset : Event("reset")
 
-    class ErrorResponse(val message: String): Message("error")
-
-    class QuestionAdminResponse(val question: Question): Message("currentQuestion")
-
-    abstract class Question(val answerType: AnswerType, val questionNumber: Int, val question: String, val answer: String): Message("question") {
+    abstract class Question(val answerType: AnswerType, val questionNumber: Int, val question: String, val answer: String): Event("question") {
         enum class AnswerType {
             SIMPLE, BUZZER
         }

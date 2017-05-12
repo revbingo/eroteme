@@ -27,7 +27,7 @@ class PingManager @Inject constructor(val quizMaster: QuizMaster, val lifecycle:
 
         quizMaster.eachTeam { team ->
             pingCount.compute(team.name, { _, count -> count?.inc() ?: 1 })
-            team.notify(Message.Ping())
+            team.notify(Event.Ping())
         }
     }
 

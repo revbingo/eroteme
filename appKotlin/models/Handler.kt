@@ -38,7 +38,7 @@ class ScoreHandler @Inject constructor(private val quizMaster: QuizMaster) : Adm
         val teamThatScored = quizMaster.teamRoster[message.get("team").asText()] ?: return
         val delta = message.get("delta").asInt()
         teamThatScored.scored(delta)
-        quizMaster.notifyTeam(teamThatScored, Message.Scored(teamThatScored.score))
+        quizMaster.notifyTeam(teamThatScored, Event.Scored(teamThatScored.score))
     }
 }
 
@@ -47,7 +47,7 @@ class BuzzerHandler @Inject constructor(private val quizMaster: QuizMaster, priv
     override fun handleTeamMessage(team: Team, message: JsonNode) {
         val responseOrder = this.buzzerManager.respond(team)
         team.buzzed(responseOrder)
-        val ack = Message.BuzzAck(team.name, responseOrder)
+        val ack = Event.BuzzAck(team.name, responseOrder)
         quizMaster.notifyTeam(team, ack)
     }
 }
@@ -76,14 +76,14 @@ class AnswerQuestionHandler @Inject constructor(private val quizMaster: QuizMast
                 if (correct) {
                     team.scored(1)
                 }
-                quizMaster.notifyTeam(team, Message.Scored(team.score))
-                quizMaster.notifyAllTeams(Message.QuestionAnswered(team, correct))
+                quizMaster.notifyTeam(team, Event.Scored(team.score))
+                quizMaster.notifyAllTeams(Event.QuestionAnswered(team, correct))
             }
             "voice" -> {
                 val correct = message.get("answerCorrect").asBoolean()
                 if(correct) {
                     team.scored(1)
-                    quizMaster.notifyTeam(team, Message.Scored(team.score))
+                    quizMaster.notifyTeam(team, Event.Scored(team.score))
                     quizMaster.reset()
                 } else {
                     team.resetBuzzer()
