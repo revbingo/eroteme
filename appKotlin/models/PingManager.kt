@@ -1,12 +1,11 @@
 package models
 
-import com.fasterxml.jackson.databind.JsonNode
 import play.inject.ApplicationLifecycle
 import java.util.concurrent.CompletableFuture
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
-class PingManager @Inject constructor(val quizMaster: QuizMaster, val lifecycle: ApplicationLifecycle): TeamSpecificHandler() {
+class PingManager @Inject constructor(val quizMaster: QuizMaster, val lifecycle: ApplicationLifecycle) {
 
     val pingCount = mutableMapOf<String, Int>()
 
@@ -23,7 +22,6 @@ class PingManager @Inject constructor(val quizMaster: QuizMaster, val lifecycle:
 
     fun ping() {
         checkTimeouts()
-        quizMaster.notifyAdmin()
 
         quizMaster.eachTeam { team ->
             pingCount.compute(team.name, { _, count -> count?.inc() ?: 1 })
@@ -47,9 +45,4 @@ class PingManager @Inject constructor(val quizMaster: QuizMaster, val lifecycle:
     fun pong(teamName: String) {
         pingCount[teamName] = 0
     }
-
-    override fun handleTeamMessage(team: Team, message: JsonNode) {
-        pong(team.name)
-    }
-
 }

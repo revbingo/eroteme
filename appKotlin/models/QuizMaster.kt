@@ -1,8 +1,8 @@
 package models
 
 import play.Logger
-import javax.inject.Singleton
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
@@ -50,6 +50,16 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
     fun reset() {
         eachTeam { it.resetBuzzer() }
         notifyAllTeams(Event.Reset())
+        notifyAdmin()
+    }
+
+    fun askNextQuestion(questionEvent: Event.Question) {
+        buzzerManager.reset()
+
+        eachTeam { it.resetBuzzer() }
+
+        notifyAllTeams(questionEvent)
+        notifyAdmin(questionEvent)
     }
 
     fun teamBuzzed(buzzEvent: Event.Buzz) {
@@ -58,11 +68,32 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
         team.buzzed(responseOrder)
         val ack = Event.BuzzAck(team.name, responseOrder)
         notifyTeam(team, ack)
+        notifyAdmin()
     }
 
     fun teamScored(scoreEvent: Event.Scored) {
         scoreEvent.team.scored(scoreEvent.delta)
         notifyTeam(scoreEvent.team, Event.Scored(scoreEvent.team, scoreEvent.delta))
+        notifyAdmin()
+    }
+
+    fun teamAnswered(answerEvent: Event.QuestionAnswered) {
+        with(answerEvent) {
+            if (correct) {
+                teamScored(Event.Scored(team, 1))
+            }
+
+            if(oneAnswerOnly) {
+                if(correct) {
+                    reset()
+                } else  {
+                    team.resetBuzzer()
+                }
+            }
+
+            notifyAllTeams(answerEvent)
+        }
+        notifyAdmin()
     }
 
     fun eachTeam(callback: (Team) -> Unit) = teamRoster.values.forEach(callback)

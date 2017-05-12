@@ -2,7 +2,7 @@ package models
 
 sealed class Event(val type: String) {
 
-    class QuestionAnswered(val team: Team, val correct: Boolean): Event("questionAnswered")
+    class QuestionAnswered(val team: Team, val correct: Boolean, val oneAnswerOnly: Boolean): Event("questionAnswered")
 
     class RegistrationResponse(val team: Team): Event("registrationResponse")
 
