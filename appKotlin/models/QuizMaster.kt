@@ -5,7 +5,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
+class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val questionAsker: QuestionAsker) {
 
     private val requestLogger = Logger.of("requestLogger")
 
@@ -53,13 +53,15 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
         sendTeamStateToAdmin()
     }
 
-    fun askNextQuestion(questionEvent: Event.Question) {
+    fun askNextQuestion() {
         buzzerManager.reset()
 
         eachTeam { it.resetBuzzer() }
 
-        notifyAllTeams(questionEvent)
-        notifyAdmin(questionEvent)
+        val question = questionAsker.nextQuestion()
+
+        notifyAllTeams(question)
+        notifyAdmin(question)
     }
 
     fun teamBuzzed(buzzEvent: Event.Buzz) {
@@ -79,6 +81,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
 
     fun teamAnswered(answerEvent: Event.QuestionAnswered) {
         with(answerEvent) {
+            val correct = questionAsker.answer(questionNumber, response)
             if (correct) {
                 teamScored(Event.Scored(team, 1))
                 if(oneAnswerOnly) {

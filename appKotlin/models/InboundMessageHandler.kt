@@ -29,25 +29,16 @@ class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster,
                 val event = Event.Scored(teamThatScored, delta)
                 quizMaster.teamScored(event)
             }
-            "buzz" -> {
-                quizMaster.teamBuzzed(Event.Buzz(team))
-            }
-            "nextQuestion" -> {
-                val question = asker.nextQuestion()
-                quizMaster.askNextQuestion(question)
-
-            }
+            "buzz" -> quizMaster.teamBuzzed(Event.Buzz(team))
+            "nextQuestion" -> quizMaster.askNextQuestion()
             "answer" -> {
                 val answerType = message.get("answerType").asText() ?: "text"
                 when(answerType) {
                     "text" -> {
-                        val correct = asker.answer(message.get("questionNumber").asInt(), message.get("answer").asText())
-                        quizMaster.teamAnswered(Event.QuestionAnswered(team, correct, false))
-
+                        quizMaster.teamAnswered(Event.QuestionAnswered(team, message.get("questionNumber").asInt(), message.get("answer").asText(), false))
                     }
                     "voice" -> {
-                        val correct = message.get("answerCorrect").asBoolean()
-                        quizMaster.teamAnswered(Event.QuestionAnswered(team, correct, true))
+                        quizMaster.teamAnswered(Event.QuestionAnswered(team, message.get("questionNumber").asInt(), message.get("answer").asText(), true))
                     }
                 }
             }

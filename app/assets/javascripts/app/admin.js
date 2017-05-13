@@ -27,12 +27,12 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         };
 
         this.correct = function(teamName) {
-            this_.socket.send(JSON.stringify(new Answer(teamName, true)));
+            this_.socket.send(JSON.stringify(new Answer(teamName, this_.model.nextQuestion.questionNumber, true)));
             this_.view.reset();
         };
 
         this.incorrect = function(teamName) {
-            this_.socket.send(JSON.stringify(new Answer(teamName, false)));
+            this_.socket.send(JSON.stringify(new Answer(teamName, this_.model.nextQuestion.questionNumber, false)));
         };
 
     }
@@ -109,10 +109,12 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         this.delta = delta;
     }
 
-    function Answer(teamName, correct) {
+    function Answer(teamName, questionNumber, correct) {
         this.type = "answer";
         this.team = teamName;
         this.answerType = "voice";
+        this.questionNumber = questionNumber;
+        this.answer = correct.toString();
         this.answerCorrect = correct;
     }
 });

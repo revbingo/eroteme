@@ -2,7 +2,7 @@ package models
 
 sealed class Event(val type: String) {
 
-    class QuestionAnswered(val team: Team, val correct: Boolean, val oneAnswerOnly: Boolean): Event("questionAnswered")
+    class QuestionAnswered(val team: Team, val questionNumber: Int, val response: String, val oneAnswerOnly: Boolean): Event("questionAnswered")
 
     class RegistrationResponse(val team: Team): Event("registrationResponse")
 
@@ -37,7 +37,7 @@ sealed class Event(val type: String) {
     class BuzzerQuestion(questionNumber: Int, question: String, answer: String) : Question(AnswerType.BUZZER, questionNumber, question, answer) {
 
         override fun checkAnswer(answer: String): Boolean {
-            return false
+            return answer.toBoolean()
         }
     }
 }
