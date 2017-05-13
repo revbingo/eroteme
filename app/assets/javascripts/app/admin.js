@@ -52,20 +52,24 @@ require(["jquery", "bootstrap", "jsrender"], function($){
             $("#teams").html(template);
 
             $(".plusScore").click(function() {
-                this_.controller.score($(this).closest("li").attr("data-team-name"), 1);
+                this_.controller.score(this_.findTeamName(this), 1);
             });
 
             $(".minusScore").click(function() {
-                this_.controller.score($(this).closest("li").attr("data-team-name"), -1);
+                this_.controller.score(this_.findTeamName(this), -1);
             });
 
             $(".correct").click(function() {
-                this_.controller.correct($(this).closest("li").attr("data-team-name"));
+                this_.controller.correct(this_.findTeamName(this));
             });
 
             $(".incorrect").click(function() {
-                this_.controller.incorrect($(this).closest("li").attr("data-team-name"));
+                this_.controller.incorrect(this_.findTeamName(this));
             });
+        };
+
+        this.findTeamName = function(element) {
+            return $(element).closest("li").attr("data-team-name");
         };
 
         this.displayNextQuestion = function() {
