@@ -4,8 +4,8 @@ import java.util.*
 
 class SoundAllocator {
 
-    val allSounds = mutableListOf("fart", "rooster", "ping", "bicycle_bell", "boom_x", "burp2_x", "cash_register2",
-                                    "cuckoo_clock2_x", "doorbell2", "honk2_x", "aoogah")
+    val allSounds = mutableListOf("fart", "rooster", "ping", "bicycle_bell", "boom_x", "burp2_x",
+                                    "cuckoo_clogstck2_x", "doorbell2", "honk2_x", "aoogah")
 
     fun allocateSound(): String {
         synchronized(this) {
