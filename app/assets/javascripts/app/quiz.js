@@ -12,28 +12,34 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 			
 			socket.onmessage = function(event) {
 				var json = JSON.parse(event.data);
-			//	this_.view.debug(json);
-				
-				if(json.type == "questionAnswered") {
-					this_.model.questionAnswered(json);
-					this_.view.displayAnswer();
-				} else if (json.type == "scored") {
-					this_.model.scored(json.team.score);
-					this_.view.updateScore();
-				} else if (json.type == "registrationResponse") {
-					this_.model.scored(json.team.score);
-					this_.view.updateScore();
-				} else if (json.type == "ping") {
-					this_.socket.send(JSON.stringify(new Pong()));
-				} else if (json.type == "reset") {
-                    this_.view.reset();
-				} else if (json.type == "askQuestion") {
-					this_.model.nextQuestion(json);
-					this_.view.displayQuestion();
-				} else if (json.type == "endQuiz") {
-					this_.view.endQuiz();
+
+				switch(json.type) {
+                    case "questionAnswered":
+                        this_.model.questionAnswered(json);
+                        this_.view.displayAnswer();
+                        break;
+                    case "scored":
+                        this_.model.scored(json.team.score);
+                        this_.view.updateScore();
+                        break;
+                    case "registrationResponse":
+                        this_.model.scored(json.team.score);
+                        this_.view.updateScore();
+                        break;
+                    case "ping":
+                        this_.socket.send(JSON.stringify(new Pong()));
+                        break;
+                    case "reset":
+                        this_.view.reset();
+                        break;
+                    case "askQuestion":
+                        this_.model.nextQuestion(json);
+                        this_.view.displayQuestion();
+                        break;
+                    case "endQuiz":
+                        this_.view.endQuiz();
+                        break;
 				}
-				
 			};
 			
 			socket.onclose = function() {

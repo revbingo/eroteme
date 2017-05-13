@@ -9,16 +9,21 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 
         this.socket.onmessage = function(event) {
             var obj = JSON.parse(event.data);
-            if(obj.type == 'teamList') {
-                this_.model.updateTeams(obj.teams);
-                this_.view.displayTeamList();
-            } else if (obj.type == 'askQuestion') {
-                this_.model.nextQuestion = obj.question;
-                this_.view.displayNextQuestion();
-            } else if (obj.type == 'endQuiz') {
-                this_.view.endQuiz();
-            } else if (obj.type == 'buzzAck') {
-                new Audio("/assets/sounds/" + obj.team.sound).play();
+            switch(obj.type) {
+                case 'teamList':
+                    this_.model.updateTeams(obj.teams);
+                    this_.view.displayTeamList();
+                    break;
+                case 'askQuestion':
+                    this_.model.nextQuestion = obj.question;
+                    this_.view.displayNextQuestion();
+                    break;
+                case 'endQuiz':
+                    this_.view.endQuiz();
+                    break;
+                case 'buzzAck':
+                    new Audio("/assets/sounds/" + obj.team.sound).play();
+                    break;
             }
         };
 
