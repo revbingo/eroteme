@@ -19,6 +19,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         };
 
         this.nextQuestion = function() {
+            this_.view.displayTeamList();
             this_.socket.send(JSON.stringify(new NextQuestion()));
         };
 
@@ -84,8 +85,13 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         };
 
         $("#nextQuestionButton").click(function() {
-            this_.displayTeamList();
             this_.controller.nextQuestion();
+        });
+
+        $(document).keydown(function(e) {
+            if(e.which == 32) {
+                this_.controller.nextQuestion();
+            }
         });
 
     }
