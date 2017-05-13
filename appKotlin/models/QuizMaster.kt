@@ -5,12 +5,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val questionAsker: QuestionAsker) {
+class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
 
     private val requestLogger = Logger.of("requestLogger")
 
     val teamRoster = mutableMapOf<String, Team>()
     private var admin: Admin? = null
+
+    var firstAnswerScores = true
+    var questionCount = 0
+    var currentQuestionNumber = 0;
+
+    var questionSource: QuestionAsker = FreeQuestionAsker()
 
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
@@ -54,11 +60,15 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val quest
     }
 
     fun askNextQuestion() {
+        currentQuestionNumber++;
+        if(currentQuestionNumber > questionCount) {
+            TODO()
+        }
         buzzerManager.reset()
 
         eachTeam { it.resetBuzzer() }
 
-        val question = questionAsker.nextQuestion()
+        val question = questionSource.nextQuestion(currentQuestionNumber)
 
         notifyAllTeams(question)
         notifyAdmin(question)
@@ -81,10 +91,10 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val quest
 
     fun teamAnswered(answerEvent: Event.QuestionAnswered) {
         with(answerEvent) {
-            val correct = questionAsker.answer(questionNumber, response)
+            val correct = questionSource.answer(questionNumber, response)
             if (correct) {
                 teamScored(Event.Scored(team, 1))
-                if(oneAnswerOnly) {
+                if(firstAnswerScores) {
                     reset()
                 }
             } else {
@@ -105,4 +115,5 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val quest
     fun sendTeamStateToAdmin() = admin?.notify(Event.TeamListResponse(teamRoster.values))
 
     fun notifyAdmin(event: Event) = admin?.notify(event)
+
 }

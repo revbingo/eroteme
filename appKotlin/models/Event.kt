@@ -34,7 +34,7 @@ sealed class Event(val type: String) {
         }
     }
 
-    class BuzzerQuestion(questionNumber: Int, question: String, answer: String) : Question(AnswerType.BUZZER, questionNumber, question, answer) {
+    class FreeQuestion(questionNumber: Int) : Question(AnswerType.BUZZER, questionNumber, "", "") {
 
         override fun checkAnswer(answer: String): Boolean {
             return answer.toBoolean()

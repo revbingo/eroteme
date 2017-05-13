@@ -1,0 +1,32 @@
+@main("qu.est.io/ns admin", "/app/admin.min") {
+
+	<h1>Set up your quiz</h1>
+	<form method="POST" action="/createQuiz">
+		<div class="form-group">
+			<label for="questionCount">How many questions?</label>
+			<input type="text" class="form-control input-lg" id="questionCount" name="questionCount"  placeholder="10" required autofocus>
+
+			<label for="questionSource">Where will the questions come from?</label>
+			<select class="form-control input-lg" id="questionSource" name="questionSource">
+				<option value="byo">I have my own</option>
+				<option value="opentrivia">Get some from opentdb.com please</option>
+			</select>
+
+			<label for="questionType">How will teams answer the question?</label>
+			<select class="form-control input-lg" id="questionType" name="questionType">
+				<option value="text">Type the answer</option>
+				<option value="voice">Press a buzzer</option>
+			</select>
+
+			<label for="singleAnswer">First with an answer, or score ever correct answer?</label>
+			<select class="form-control input-lg" id="singleAnswer" name="singleAnswer">
+				<option value="true">Only the first correct answer scores</option>
+				<option value="false">Everyone who gets it right gets a point</option>
+			</select>
+		</div>
+
+		<p class="lead">
+			<button type="submit" class="btn btn-lg btn-default">Let's go!</button>
+		</p>
+	</form>
+}

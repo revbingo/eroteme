@@ -12,27 +12,18 @@ import javax.inject.Singleton
 
 abstract class QuestionAsker {
 
-    private var questions = listOf<Event.Question>()
-    private var questionCount = 0
+    var questions: List<Event.Question> = emptyList()
 
-    fun nextQuestion(): Event.Question {
-        Logger.info("Getting next question")
-        if(questions.isEmpty()) questions = loadQuestions()
-        Logger.info("Next q is ${questions.get(questionCount).question}")
-        return questions.get(questionCount++)
-    }
+    abstract fun nextQuestion(questionNumber: Int): Event.Question
 
     fun answer(questionNumber: Int, answer: String): Boolean {
-        return questions[questionNumber - 1].checkAnswer(answer)
+        return questions[questionNumber].checkAnswer(answer)
     }
-
-    abstract fun loadQuestions(): List<Event.Question>
 }
 
-@Singleton
 class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsker() {
 
-    override fun loadQuestions(): List<Event.Question> {
+    fun loadQuestions(): List<Event.Question> {
         Logger.info("Fetching questions from OpenTrivia")
         val request = ws.url("http://opentdb.com/api.php").setQueryParameter("amount", "50")
         val responsePromise: CompletionStage<OpenTriviaResponse> = request.get().thenApply<JsonNode>(WSResponse::asJson).thenApply { jsonNode ->
@@ -41,47 +32,39 @@ class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsk
 
         val response = responsePromise.toCompletableFuture().get()
         return response.results.mapIndexed { index, otquestion ->
-            Event.BuzzerQuestion(index, otquestion.question, otquestion.correct_answer)
+            Event.SimpleQuestion(index, otquestion.question, otquestion.correct_answer)
         }
+    }
+
+    override fun nextQuestion(questionNumber: Int): Event.Question {
+        Logger.info("Getting next question")
+        if(questions.isEmpty()) questions = loadQuestions()
+        return questions.get(questionNumber)
     }
 }
 
-@Singleton
 class FixedQuestionAsker: QuestionAsker() {
-    override fun loadQuestions(): List<Event.Question> {
+
+    fun loadQuestions(): List<Event.Question> {
        return listOf(Event.SimpleQuestion(1, "what's the first number?", "one"),
                Event.SimpleQuestion(2, "what's the second number?", "two"),
                Event.SimpleQuestion(3, "what's the third number?", "three"),
                Event.SimpleQuestion(4, "what's the fourth number?", "four"),
                Event.SimpleQuestion(5, "what's the fifth number?", "five"))
     }
+
+    override fun nextQuestion(questionNumber: Int): Event.Question {
+        Logger.info("Getting next question")
+        if(questions.isEmpty()) questions = loadQuestions()
+        return questions.get(questionNumber)
+    }
 }
 
 @Singleton
-class BuzzerQuestionAsker: QuestionAsker() {
-    override fun loadQuestions(): List<Event.Question> {
-        return listOf(Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", ""),
-                Event.BuzzerQuestion(1, "", "")
-                )
+class FreeQuestionAsker : QuestionAsker() {
+
+    override fun nextQuestion(questionNumber: Int): Event.Question {
+        return Event.FreeQuestion(questionNumber);
     }
 }
 
