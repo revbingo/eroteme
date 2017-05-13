@@ -27,11 +27,10 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
                     this_.socket.send(JSON.stringify(new Pong()));
                 } else if (json.type == "reset") {
                      this_.view.reset();
-				} else {
-					if(json.answerType) {
-						this_.model.nextQuestion(json);
-						this_.view.displayQuestion();
-					}	
+				} else if (json.type == "askQuestion") {
+                    console.log(json);
+                    this_.model.nextQuestion(json);
+                    this_.view.displayQuestion();
 				}
 				
 			};
@@ -60,7 +59,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		var buzzerTmp = $.templates("#buzzer");
 		
 		this.displayQuestion = function() {
-			this_[this_.model.currentQuestion.answerType](this_.model.currentQuestion);
+			this_[this_.model.currentQuestion.answerType](this_.model.currentQuestion.question);
 		};
 		
 		this.displayAnswer = function() {
@@ -77,7 +76,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
             $("#answerArea").empty();
 		};
 
-		this.SIMPLE = function(currentQuestion) {
+		this.TEXT = function(currentQuestion) {
 			$("#questionArea").css("color", "white");
 			$("#questionArea").html(this_.model.currentQuestion.questionNumber + ": " + this_.model.currentQuestion.question);
 			
@@ -88,7 +87,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 			});
 		};
 		
-		this.BUZZER = function(currentQuestion) {
+		this.VOICE = function(currentQuestion) {
 			$("#answerArea").html(buzzerTmp.render([{}]));
 			$("#buzzer").click(function() {
 				$("#answerArea").html("...");

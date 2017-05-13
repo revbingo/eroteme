@@ -7,23 +7,25 @@ import play.libs.Json
 import play.libs.ws.WSClient
 import play.libs.ws.WSResponse
 import java.util.concurrent.CompletionStage
-import javax.inject.Inject
 import javax.inject.Singleton
 
-abstract class QuestionAsker {
+abstract class QuestionSource {
 
     var questions: List<Event.Question> = emptyList()
 
     abstract fun nextQuestion(questionNumber: Int): Event.Question
 
-    fun answer(questionNumber: Int, answer: String): Boolean {
+    open fun answer(questionNumber: Int, answer: String): Boolean {
         return questions[questionNumber].checkAnswer(answer)
     }
 }
 
-class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsker() {
+data class OpenTriviaResponse(@JsonProperty("response_code") val response_code: Int, @JsonProperty("results") val results: List<OpenTriviaQuestion>)
+data class OpenTriviaQuestion(@JsonProperty("category") val category: String, @JsonProperty("type") val type: String, @JsonProperty("difficulty") val difficulty: String, @JsonProperty("question") val question: String, @JsonProperty("correct_answer") val correct_answer: String)
 
-    fun loadQuestions(): List<Event.Question> {
+class OpenTriviaQuestionSource(val ws: WSClient): QuestionSource() {
+
+    private fun loadQuestions(): List<Event.Question> {
         Logger.info("Fetching questions from OpenTrivia")
         val request = ws.url("http://opentdb.com/api.php").setQueryParameter("amount", "50")
         val responsePromise: CompletionStage<OpenTriviaResponse> = request.get().thenApply<JsonNode>(WSResponse::asJson).thenApply { jsonNode ->
@@ -43,7 +45,7 @@ class OpenTriviaQuestionAsker @Inject constructor(val ws: WSClient): QuestionAsk
     }
 }
 
-class FixedQuestionAsker: QuestionAsker() {
+class FixedQuestionSource : QuestionSource() {
 
     fun loadQuestions(): List<Event.Question> {
        return listOf(Event.SimpleQuestion(1, "what's the first number?", "one"),
@@ -61,12 +63,13 @@ class FixedQuestionAsker: QuestionAsker() {
 }
 
 @Singleton
-class FreeQuestionAsker : QuestionAsker() {
+class FreeQuestionSource : QuestionSource() {
 
     override fun nextQuestion(questionNumber: Int): Event.Question {
         return Event.FreeQuestion(questionNumber);
     }
-}
 
-data class OpenTriviaResponse(@JsonProperty("response_code") val response_code: Int, @JsonProperty("results") val results: List<OpenTriviaQuestion>)
-data class OpenTriviaQuestion(@JsonProperty("category") val category: String, @JsonProperty("type") val type: String, @JsonProperty("difficulty") val difficulty: String, @JsonProperty("question") val question: String, @JsonProperty("correct_answer") val correct_answer: String)
+    override fun answer(questionNumber: Int, answer: String): Boolean {
+        return answer.toBoolean()
+    }
+}

@@ -12,11 +12,12 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
     val teamRoster = mutableMapOf<String, Team>()
     private var admin: Admin? = null
 
+    var answerType = Event.AnswerType.VOICE
     var firstAnswerScores = true
-    var questionCount = 0
+    var questionCount = 20
     var currentQuestionNumber = 0;
 
-    var questionSource: QuestionAsker = FreeQuestionAsker()
+    var questionSource: QuestionSource = FreeQuestionSource()
 
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
@@ -70,8 +71,9 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
 
         val question = questionSource.nextQuestion(currentQuestionNumber)
 
-        notifyAllTeams(question)
-        notifyAdmin(question)
+        val askQuestionEvent = Event.AskQuestion(answerType, question)
+        notifyAllTeams(askQuestionEvent)
+        notifyAdmin(askQuestionEvent)
     }
 
     fun teamBuzzed(buzzEvent: Event.Buzz) {
@@ -80,6 +82,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
         team.buzzed(responseOrder)
         val ack = Event.BuzzAck(team.name, responseOrder)
         notifyTeam(team, ack)
+        notifyAdmin(ack)
         sendTeamStateToAdmin()
     }
 

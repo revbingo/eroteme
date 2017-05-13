@@ -5,8 +5,7 @@ import play.Logger
 import play.libs.Json
 import javax.inject.Inject
 
-class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster,
-                                                val pingManager: PingManager, val asker: QuestionAsker) {
+class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster, val pingManager: PingManager) {
 
     private val requestLogger = Logger.of("requestLogger")
 
@@ -31,17 +30,7 @@ class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster,
             }
             "buzz" -> quizMaster.teamBuzzed(Event.Buzz(team))
             "nextQuestion" -> quizMaster.askNextQuestion()
-            "answer" -> {
-                val answerType = message.get("answerType").asText() ?: "text"
-                when(answerType) {
-                    "text" -> {
-                        quizMaster.teamAnswered(Event.QuestionAnswered(team, message.get("questionNumber").asInt(), message.get("answer").asText(), false))
-                    }
-                    "voice" -> {
-                        quizMaster.teamAnswered(Event.QuestionAnswered(team, message.get("questionNumber").asInt(), message.get("answer").asText(), true))
-                    }
-                }
-            }
+            "answer" -> quizMaster.teamAnswered(Event.QuestionAnswered(team, message.get("questionNumber").asInt(), message.get("answer").asText()))
 
             else -> Logger.warn("Unexpected message type:" + message.toString())
         }

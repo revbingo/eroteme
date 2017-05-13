@@ -12,8 +12,8 @@ require(["jquery", "bootstrap", "jsrender"], function($){
             if(obj.type == 'teamList') {
                 this_.model.updateTeams(obj.teams);
                 this_.view.displayTeamList();
-            } else if (obj.type == 'question') {
-                this_.model.nextQuestion = obj;
+            } else if (obj.type == 'askQuestion') {
+                this_.model.nextQuestion = obj.question;
                 this_.view.displayNextQuestion();
             }
         };
