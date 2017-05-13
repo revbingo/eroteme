@@ -20,14 +20,14 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
 
         statusChange(theTeam.name, Team.Status.LIVE)
         theTeam.notify(Event.RegistrationResponse(theTeam))
-        notifyAdmin()
+        sendTeamStateToAdmin()
     }
 
     fun registerAdmin(outSocket: JsonWebSocket) {
         requestLogger.info("Admin join")
         admin?.destroy()
         admin = Admin(outSocket)
-        notifyAdmin()
+        sendTeamStateToAdmin()
     }
 
     fun deregisterAdmin() {
@@ -44,13 +44,13 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
         }
 
         requestLogger.info("$teamName is $status")
-        notifyAdmin()
+        sendTeamStateToAdmin()
     }
 
     fun reset() {
         eachTeam { it.resetBuzzer() }
         notifyAllTeams(Event.Reset())
-        notifyAdmin()
+        sendTeamStateToAdmin()
     }
 
     fun askNextQuestion(questionEvent: Event.Question) {
@@ -68,32 +68,29 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
         team.buzzed(responseOrder)
         val ack = Event.BuzzAck(team.name, responseOrder)
         notifyTeam(team, ack)
-        notifyAdmin()
+        sendTeamStateToAdmin()
     }
 
     fun teamScored(scoreEvent: Event.Scored) {
         scoreEvent.team.scored(scoreEvent.delta)
         notifyTeam(scoreEvent.team, Event.Scored(scoreEvent.team, scoreEvent.delta))
-        notifyAdmin()
+        sendTeamStateToAdmin()
     }
 
     fun teamAnswered(answerEvent: Event.QuestionAnswered) {
         with(answerEvent) {
             if (correct) {
                 teamScored(Event.Scored(team, 1))
-            }
-
-            if(oneAnswerOnly) {
-                if(correct) {
+                if(oneAnswerOnly) {
                     reset()
-                } else  {
-                    team.resetBuzzer()
                 }
+            } else {
+                team.resetBuzzer()
             }
 
             notifyAllTeams(answerEvent)
         }
-        notifyAdmin()
+        sendTeamStateToAdmin()
     }
 
     fun eachTeam(callback: (Team) -> Unit) = teamRoster.values.forEach(callback)
@@ -102,7 +99,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
 
     fun notifyTeam(team: Team, event: Event) = team.notify(event)
 
-    fun notifyAdmin() = admin?.notify(Event.TeamListResponse(teamRoster.values))
+    fun sendTeamStateToAdmin() = admin?.notify(Event.TeamListResponse(teamRoster.values))
 
     fun notifyAdmin(event: Event) = admin?.notify(event)
 }

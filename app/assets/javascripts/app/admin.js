@@ -28,6 +28,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 
         this.correct = function(teamName) {
             this_.socket.send(JSON.stringify(new Answer(teamName, true)));
+            this_.view.reset();
         };
 
         this.incorrect = function(teamName) {
@@ -76,6 +77,10 @@ require(["jquery", "bootstrap", "jsrender"], function($){
             var template = this_.nextQuestionTmpl.render(this_.model.nextQuestion);
 
             $("#nextQuestion").html(template);
+        };
+
+        this.reset = function() {
+            $("#nextQuestion").empty();
         };
 
         $("#nextQuestionButton").click(function() {
