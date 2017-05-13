@@ -130,6 +130,5 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         this.answerType = "voice";
         this.questionNumber = questionNumber;
         this.answer = correct.toString();
-        this.answerCorrect = correct;
     }
 });

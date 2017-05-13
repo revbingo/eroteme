@@ -98,7 +98,12 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
 
     fun teamAnswered(answerEvent: Event.QuestionAnswered) {
         with(answerEvent) {
-            val correct = questionSource.answer(questionNumber, response)
+            val correct = if(answerType == Event.AnswerType.TEXT) {
+                questionSource.answer(questionNumber, response)
+            } else {
+                response.toBoolean()
+            }
+
             if (correct) {
                 teamScored(Event.Scored(team, 1))
                 if(firstAnswerScores) {
