@@ -17,6 +17,8 @@ require(["jquery", "bootstrap", "jsrender"], function($){
                 this_.view.displayNextQuestion();
             } else if (obj.type == 'endQuiz') {
                 this_.view.endQuiz();
+            } else if (obj.type == 'buzzAck') {
+                new Audio("/assets/sounds/" + obj.team.sound).play();
             }
         };
 

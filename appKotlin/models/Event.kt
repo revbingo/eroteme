@@ -10,7 +10,7 @@ sealed class Event(val type: String) {
 
     class Buzz(val team: Team)
 
-    class BuzzAck(val teamName: String, val responseOrder: Int): Event("buzzAck")
+    class BuzzAck(val team: Team, val responseOrder: Int): Event("buzzAck")
 
     class Scored(val team: Team, val delta: Int): Event("scored")
 

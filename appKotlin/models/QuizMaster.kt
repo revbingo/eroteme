@@ -84,7 +84,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
         val team = buzzEvent.team
         val responseOrder = buzzerManager.respond(team)
         team.buzzed(responseOrder)
-        val ack = Event.BuzzAck(team.name, responseOrder)
+        val ack = Event.BuzzAck(team, responseOrder)
         notifyTeam(team, ack)
         notifyAdmin(ack)
         sendTeamStateToAdmin()

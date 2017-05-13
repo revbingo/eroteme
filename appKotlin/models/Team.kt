@@ -3,12 +3,14 @@ package models
 import play.libs.Json
 
 class Team(val name: String, private var out: JsonWebSocket?) {
+    private val NOT_BUZZED = 1000
+
     var score = 0
-        private set
     var buzzOrder = NOT_BUZZED
-        private set
 
     var status: Status = Status.LIVE
+
+    var sound: String = "ping.wav"
 
     fun scored(delta: Int) {
         this.score += delta
@@ -22,10 +24,6 @@ class Team(val name: String, private var out: JsonWebSocket?) {
         this.buzzOrder = NOT_BUZZED
     }
 
-    fun haveBuzzed(): Boolean {
-        return this.buzzOrder > 0
-    }
-
     fun notify(msg: Event) {
         out?.write(Json.toJson(msg))
     }
@@ -35,9 +33,6 @@ class Team(val name: String, private var out: JsonWebSocket?) {
     }
 
     companion object {
-
-        private val NOT_BUZZED = 1000
-
         fun nil(): Team {
             return Team("", null)
         }
