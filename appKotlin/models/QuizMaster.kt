@@ -63,8 +63,12 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
     fun askNextQuestion() {
         currentQuestionNumber++;
         if(currentQuestionNumber > questionCount) {
-            TODO()
+            val endQuiz = Event.EndQuiz()
+            notifyAllTeams(endQuiz)
+            notifyAdmin(endQuiz)
+            return
         }
+
         buzzerManager.reset()
 
         eachTeam { it.resetBuzzer() }

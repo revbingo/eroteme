@@ -20,6 +20,8 @@ sealed class Event(val type: String) {
 
     class AskQuestion(val answerType: AnswerType, val question: Question): Event("askQuestion")
 
+    class EndQuiz(): Event("endQuiz")
+
     abstract class Question(val questionNumber: Int, val question: String, val answer: String): Event("question") {
         abstract fun checkAnswer(answer: String): Boolean
     }

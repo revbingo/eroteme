@@ -30,6 +30,7 @@ public class Admin extends Controller {
 		CreateQuizForm quizConfig = factory.form(CreateQuizForm.class).bindFromRequest().get();
 		quizMaster.setFirstAnswerScores(quizConfig.getSingleAnswer());
 		quizMaster.setQuestionCount(quizConfig.getQuestionCount().intValue());
+		quizMaster.setCurrentQuestionNumber(0);
 
 		QuestionSource source;
 		switch(quizConfig.getQuestionSource()) {

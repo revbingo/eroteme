@@ -15,6 +15,8 @@ require(["jquery", "bootstrap", "jsrender"], function($){
             } else if (obj.type == 'askQuestion') {
                 this_.model.nextQuestion = obj.question;
                 this_.view.displayNextQuestion();
+            } else if (obj.type == 'endQuiz') {
+                this_.view.endQuiz();
             }
         };
 
@@ -82,6 +84,11 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 
         this.reset = function() {
             $("#nextQuestion").empty();
+        };
+
+        this.endQuiz = function() {
+            $("#nextQuestion").html("<h1>It's all over!</h1>");
+            $("#nextQuestionButton").remove();
         };
 
         $("#nextQuestionButton").click(function() {

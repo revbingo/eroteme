@@ -23,14 +23,15 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 				} else if (json.type == "registrationResponse") {
 					this_.model.scored(json.team.score);
 					this_.view.updateScore();
-                } else if (json.type == "ping") {
-                    this_.socket.send(JSON.stringify(new Pong()));
-                } else if (json.type == "reset") {
-                     this_.view.reset();
+				} else if (json.type == "ping") {
+					this_.socket.send(JSON.stringify(new Pong()));
+				} else if (json.type == "reset") {
+                    this_.view.reset();
 				} else if (json.type == "askQuestion") {
-                    console.log(json);
-                    this_.model.nextQuestion(json);
-                    this_.view.displayQuestion();
+					this_.model.nextQuestion(json);
+					this_.view.displayQuestion();
+				} else if (json.type == "endQuiz") {
+					this_.view.endQuiz();
 				}
 				
 			};
@@ -73,6 +74,11 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		};
 
 		this.reset = function() {
+			$("#answerArea").empty();
+		};
+
+		this.endQuiz = function() {
+			$("#questionArea").html("<h1>It's all over!</h1>");
             $("#answerArea").empty();
 		};
 
@@ -132,7 +138,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 		this.questionNumber = questionNumber;
 	}
 
-    function Pong() {
-        this.type = "pong";
-    }
+	function Pong() {
+		this.type = "pong";
+	}
 });
