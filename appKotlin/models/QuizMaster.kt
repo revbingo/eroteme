@@ -5,7 +5,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
+class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val soundAllocator: SoundAllocator) {
 
     private val requestLogger = Logger.of("requestLogger")
 
@@ -22,7 +22,9 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager) {
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)
 
-        val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out) })
+        val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out).apply {
+            sound = soundAllocator.allocateSound()
+        } })
         theTeam.rebind(out)
 
         statusChange(theTeam.name, Team.Status.LIVE)

@@ -22,7 +22,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
                     this_.view.endQuiz();
                     break;
                 case 'buzzAck':
-                    new Audio("/assets/sounds/" + obj.team.sound).play();
+                    new Audio("/assets/sounds/" + obj.team.sound + ".wav").play();
                     break;
             }
         };
