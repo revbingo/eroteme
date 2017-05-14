@@ -88,7 +88,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 
 		this.TEXT = function(currentQuestion) {
 			$("#questionArea").css("color", "white");
-			$("#questionArea").html(this_.model.currentQuestion.questionNumber + ": " + this_.model.currentQuestion.question);
+			$("#questionArea").html(currentQuestion.questionNumber + ": " + currentQuestion.question);
 			
 			$("#answerArea").html(simpleAnswerTmpl.render([{}]));
 			$("#submitAnswer").click(function() {
