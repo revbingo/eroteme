@@ -17,8 +17,11 @@
 			<div class="name">
 				{{:name}}
 			</div>
+			<div class="response">
+				{{:latestResponse}}
+			</div>
 			<div class="answer">
-			{{if (buzzOrder < 999)}}
+			{{if (buzzOrder < 999) || latestResponse != null}}
 				<button class="btn btn-default btn-success correct"><i class="fa fa-check"></i></button>
 				<button class="btn btn-default btn-success incorrect"><i class="fa fa-times"></i></button>
 			{{/if}}

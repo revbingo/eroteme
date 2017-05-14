@@ -8,6 +8,7 @@ class Team(val name: String, private var out: JsonWebSocket?) {
     var score = 0
     var buzzOrder = NOT_BUZZED
 
+    var latestResponse: String? = null
     var status: Status = Status.LIVE
 
     var sound: String = "ping.wav"

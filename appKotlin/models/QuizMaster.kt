@@ -93,6 +93,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
 
     fun teamScored(scoreEvent: Event.Scored) {
         scoreEvent.team.scored(scoreEvent.delta)
+        scoreEvent.team.latestResponse = null
         notifyTeam(scoreEvent.team, Event.Scored(scoreEvent.team, scoreEvent.delta))
         sendTeamStateToAdmin()
     }
@@ -102,9 +103,11 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
             if (correct) {
                 teamScored(Event.Scored(team, 1))
                 if(firstAnswerScores) {
+                    eachTeam { it.latestResponse = null }
                     reset()
                 }
             } else {
+                team.latestResponse = null
                 team.resetBuzzer()
             }
         }
@@ -116,18 +119,13 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         with(answerEvent) {
             val correct = questionSource.answer(questionNumber, response)
 
-            if (correct) {
-                teamScored(Event.Scored(team, 1))
-                if(firstAnswerScores) {
-                    reset()
-                }
+            if(correct) {
+                answerConfirmed(Event.AnswerConfirmation(team, correct = true))
             } else {
-                team.resetBuzzer()
+                team.latestResponse = response
+                sendTeamStateToAdmin()
             }
-
-            notifyAllTeams(answerEvent)
         }
-        sendTeamStateToAdmin()
     }
 
     fun eachTeam(callback: (Team) -> Unit) = teamRoster.values.forEach(callback)
