@@ -1,19 +1,19 @@
 require(["jquery", "bootstrap", "jsrender"], function ($) {
-	new Controller();
-	
-	function Controller() {
-		this.socket = register();
-		this.model = new Model();
-		this.view = new View(this, this.model);
-		var this_ = this;
-		
-		function register() {
-			var socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind?teamName=" + teamName);
-			
-			socket.onmessage = function(event) {
-				var json = JSON.parse(event.data);
+    new Controller();
 
-				switch(json.type) {
+    function Controller() {
+        this.socket = register();
+        this.model = new Model();
+        this.view = new View(this, this.model);
+        var this_ = this;
+
+        function register() {
+            var socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind?teamName=" + teamName);
+
+            socket.onmessage = function(event) {
+                var json = JSON.parse(event.data);
+
+                switch(json.type) {
                     case "rightWrong":
                         this_.model.questionAnswered(json);
                         this_.view.displayAnswer();
@@ -39,109 +39,120 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
                     case "endQuiz":
                         this_.view.endQuiz();
                         break;
-				}
-			};
-			
-			socket.onclose = function() {
-				this_.socket = register();
-			};
-			return socket;
-		}
-		
-		this.sendAnswer = function(questionNumber, answer) {
-			this_.socket.send(JSON.stringify(new Answer(questionNumber, answer)));
-		};
-		
-		this.buzz = function(questionNumber) {
-			this_.socket.send(JSON.stringify(new Buzz(questionNumber)));
-		};
-	}
-		
-	function View(controller, model) {
-		
-		this.controller = controller;
-		this.model = model;
-		var this_ = this;
-		var simpleAnswerTmpl = $.templates("#simpleAnswer");
-		var buzzerTmp = $.templates("#buzzer");
-		
-		this.displayQuestion = function() {
-			this_[this_.model.currentQuestion.answerType](this_.model.currentQuestion.question);
-		};
-		
-		this.displayAnswer = function() {
-			$("#questionArea").css("color", this_.model.questionCorrect ? "green" : "red");
-		};
-		
-		this.updateScore = function() {
-			$("#score").html(this_.model.teamScore);
-		};
+                }
+            };
 
-		this.reset = function() {
-			$("#answerArea").empty();
-		};
+            socket.onclose = function() {
+                this_.socket = register();
+            };
+            return socket;
+        }
 
-		this.endQuiz = function() {
-			$("#questionArea").html("<h1>It's all over!</h1>");
+        this.sendAnswer = function(questionNumber, answer) {
+            this_.socket.send(JSON.stringify(new Answer(questionNumber, answer)));
+        };
+
+        this.buzz = function(questionNumber) {
+            this_.socket.send(JSON.stringify(new Buzz(questionNumber)));
+        };
+    }
+
+    function View(controller, model) {
+
+        this.controller = controller;
+        this.model = model;
+        var this_ = this;
+        var simpleAnswerTmpl = $.templates("#simpleAnswer");
+        var buzzerTmp = $.templates("#buzzer");
+
+        this.displayQuestion = function() {
+            this_[this_.model.currentQuestion.answerType](this_.model.currentQuestion.question);
+        };
+
+        this.displayAnswer = function() {
+            $("#questionArea").css("color", this_.model.questionCorrect ? "green" : "red");
+        };
+
+        this.updateScore = function() {
+            $("#score").html(this_.model.teamScore);
+        };
+
+        this.reset = function() {
             $("#answerArea").empty();
-		};
+        };
 
-		this.TEXT = function(currentQuestion) {
-			$("#questionArea").css("color", "white");
-			$("#questionArea").html(currentQuestion.questionNumber + ": " + currentQuestion.question);
-			
-			$("#answerArea").html(simpleAnswerTmpl.render([{}]));
-			$("#submitAnswer").click(function() {
-				controller.sendAnswer(currentQuestion.questionNumber, $("#answer").val());
-				$("#answerArea").empty();
-			});
-		};
-		
-		this.VOICE = function(currentQuestion) {
-			$("#answerArea").html(buzzerTmp.render([{}]));
-			$("#buzzer").click(function() {
-				$("#answerArea").html("...");
-				controller.buzz(currentQuestion.questionNumber);
-			});
-		};
-		
-		this.debug = function(data) {
-			$("#debug").html(JSON.stringify(data));
-		};
-	}
+        this.endQuiz = function() {
+            $("#questionArea").html("<h1>It's all over!</h1>");
+            $("#answerArea").empty();
+        };
 
-	function Model() {
-		this.currentQuestion = {};
-		this.teamScore = 0;
-		this.questionCorrect = false;
-		
-		var this_ = this;
-		
-		this.nextQuestion = function(question) {
-			this_.currentQuestion = question;
-		};
-		
-		this.questionAnswered = function(answer) {
-			this_.questionCorrect = answer.correct;
-		};
-		
-		this.scored = function(score) {
-			this_.teamScore = score;
-		};
-	}
-	
-	function Answer(questionNumber, answer) {
-		this.answer = answer;
-		this.questionNumber = questionNumber;
-		this.type = "answer";
-	}
-	
-	function Buzz(questionNumber) {
-		this.type = "buzz";
-		this.questionNumber = questionNumber;
-	}
+        this.TEXT = function(currentQuestion) {
+            $("#questionArea").css("color", "white");
+            var questionText = "Q" + currentQuestion.questionNumber;
+            if(currentQuestion.question !== "") {
+                questionText += ": " + currentQuestion.question;
+            }
+            $("#questionArea").html(questionText);
 
-	function Pong() {
-		this.type = "pong";
-	}
+            $("#answerArea").html(simpleAnswerTmpl.render([{}]));
+            $("#submitAnswer").click(function() {
+                controller.sendAnswer(currentQuestion.questionNumber, $("#answer").val());
+                $("#answerArea").empty();
+            });
+        };
+
+        this.VOICE = function(currentQuestion) {
+            $("#questionArea").css("color", "white");
+            var questionText = "Q" + currentQuestion.questionNumber;
+            if(currentQuestion.question !== "") {
+                questionText += currentQuestion.question;
+            }
+            $("#questionArea").html(questionText);
+
+            $("#answerArea").html(buzzerTmp.render([{}]));
+            $("#buzzer").click(function() {
+                $("#answerArea").empty();
+                controller.buzz(currentQuestion.questionNumber);
+            });
+        };
+
+        this.debug = function(data) {
+            $("#debug").html(JSON.stringify(data));
+        };
+    }
+
+    function Model() {
+        this.currentQuestion = {};
+        this.teamScore = 0;
+        this.questionCorrect = false;
+
+        var this_ = this;
+
+        this.nextQuestion = function(question) {
+            this_.currentQuestion = question;
+        };
+
+        this.questionAnswered = function(answer) {
+            this_.questionCorrect = answer.correct;
+        };
+
+        this.scored = function(score) {
+            this_.teamScore = score;
+        };
+    }
+
+    function Answer(questionNumber, answer) {
+        this.answer = answer;
+        this.questionNumber = questionNumber;
+        this.type = "answer";
+    }
+
+    function Buzz(questionNumber) {
+        this.type = "buzz";
+        this.questionNumber = questionNumber;
+    }
+
+    function Pong() {
+        this.type = "pong";
+    }
 });
