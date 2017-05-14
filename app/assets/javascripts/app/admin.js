@@ -37,14 +37,13 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         };
 
         this.correct = function(teamName) {
-            this_.socket.send(JSON.stringify(new Answer(teamName, this_.model.nextQuestion.questionNumber, true)));
+            this_.socket.send(JSON.stringify(new Confirmation(teamName, true)));
             this_.view.reset();
         };
 
         this.incorrect = function(teamName) {
-            this_.socket.send(JSON.stringify(new Answer(teamName, this_.model.nextQuestion.questionNumber, false)));
+            this_.socket.send(JSON.stringify(new Confirmation(teamName, false)));
         };
-
     }
 
     function View(controller, model) {
@@ -127,6 +126,12 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         this.type = "score";
         this.team = teamName;
         this.delta = delta;
+    }
+
+    function Confirmation(teamName, correct) {
+        this.type = "confirmation";
+        this.team = teamName;
+        this.correct = correct;
     }
 
     function Answer(teamName, questionNumber, correct) {

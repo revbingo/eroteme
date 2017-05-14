@@ -20,9 +20,9 @@ sealed class Event(val type: String) {
 
     class AskQuestion(val answerType: AnswerType, val question: Question): Event("askQuestion")
 
-    class RightWrong(val team: Team, val correct: Boolean): Event("rightWrong")
+    class AnswerConfirmation(val team: Team, val correct: Boolean): Event("confirmation")
 
-    class EndQuiz(): Event("endQuiz")
+    class EndQuiz: Event("endQuiz")
 
     abstract class Question(val questionNumber: Int, val question: String, val answer: String): Event("question") {
         abstract fun checkAnswer(answer: String): Boolean

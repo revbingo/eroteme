@@ -28,6 +28,7 @@ class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster, val 
                 val event = Event.Scored(teamThatScored, delta)
                 quizMaster.teamScored(event)
             }
+            "confirmation" -> quizMaster.answerConfirmed(Event.AnswerConfirmation(team, message.get("correct").asBoolean()))
             "buzz" -> quizMaster.teamBuzzed(Event.Buzz(team))
             "nextQuestion" -> quizMaster.askNextQuestion()
             "answer" -> quizMaster.teamAnswered(Event.QuestionAnswered(team, message.get("questionNumber").asInt(), message.get("answer").asText()))

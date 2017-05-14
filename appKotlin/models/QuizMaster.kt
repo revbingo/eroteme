@@ -97,22 +97,31 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         sendTeamStateToAdmin()
     }
 
-    fun teamAnswered(answerEvent: Event.QuestionAnswered) {
-        with(answerEvent) {
-            val correct = if(answerType == Event.AnswerType.TEXT) {
-                questionSource.answer(questionNumber, response)
-            } else {
-                response.toBoolean()
-            }
-
+    fun answerConfirmed(confirmation: Event.AnswerConfirmation) {
+        with(confirmation) {
             if (correct) {
                 teamScored(Event.Scored(team, 1))
-                notifyTeam(team, Event.RightWrong(team, true))
                 if(firstAnswerScores) {
                     reset()
                 }
             } else {
-                notifyTeam(team, Event.RightWrong(team, false))
+                team.resetBuzzer()
+            }
+        }
+        notifyTeam(confirmation.team, confirmation)
+        sendTeamStateToAdmin()
+    }
+
+    fun teamAnswered(answerEvent: Event.QuestionAnswered) {
+        with(answerEvent) {
+            val correct = questionSource.answer(questionNumber, response)
+
+            if (correct) {
+                teamScored(Event.Scored(team, 1))
+                if(firstAnswerScores) {
+                    reset()
+                }
+            } else {
                 team.resetBuzzer()
             }
 
