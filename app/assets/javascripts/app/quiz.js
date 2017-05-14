@@ -14,7 +14,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
 				var json = JSON.parse(event.data);
 
 				switch(json.type) {
-                    case "questionAnswered":
+                    case "rightWrong":
                         this_.model.questionAnswered(json);
                         this_.view.displayAnswer();
                         break;

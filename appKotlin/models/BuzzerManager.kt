@@ -16,6 +16,8 @@ class BuzzerManager {
 
     @Synchronized fun respond(team: Team): Int {
         respondedTeams.add(team)
-        return respondedTeams.size
+        val responseOrder = respondedTeams.size
+        team.buzzed(responseOrder)
+        return responseOrder
     }
 }

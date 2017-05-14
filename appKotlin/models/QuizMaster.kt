@@ -85,7 +85,6 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     fun teamBuzzed(buzzEvent: Event.Buzz) {
         val team = buzzEvent.team
         val responseOrder = buzzerManager.respond(team)
-        team.buzzed(responseOrder)
         val ack = Event.BuzzAck(team, responseOrder)
         notifyTeam(team, ack)
         notifyAdmin(ack)
@@ -108,10 +107,12 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
 
             if (correct) {
                 teamScored(Event.Scored(team, 1))
+                notifyTeam(team, Event.RightWrong(team, true))
                 if(firstAnswerScores) {
                     reset()
                 }
             } else {
+                notifyTeam(team, Event.RightWrong(team, false))
                 team.resetBuzzer()
             }
 
