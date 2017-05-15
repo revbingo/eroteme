@@ -162,7 +162,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
 
     fun notifyTeam(team: Team, event: Event) = team.notify(event)
 
-    fun sendTeamStateToAdmin() = admin?.notify(Event.TeamListResponse(teamRoster.values))
+    fun sendTeamStateToAdmin() = admin?.notify(Event.QuizState(teamRoster.values))
 
     fun notifyAdmin(event: Event) = admin?.notify(event)
 

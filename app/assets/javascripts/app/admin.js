@@ -10,7 +10,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         this.socket.onmessage = function(event) {
             var obj = JSON.parse(event.data);
             switch(obj.type) {
-                case 'teamList':
+                case 'quizState':
                     this_.model.updateTeams(obj.teams);
                     this_.view.displayTeamList();
                     break;
@@ -29,20 +29,24 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 
         this.nextQuestion = function() {
             this_.view.displayTeamList();
-            this_.socket.send(JSON.stringify(new NextQuestion()));
+            this_.send(new NextQuestion());
         };
 
         this.score = function(teamName, delta) {
-            this_.socket.send(JSON.stringify(new Score(teamName, delta)));
+            this_.send(new Score(teamName, delta));
         };
 
         this.correct = function(teamName) {
-            this_.socket.send(JSON.stringify(new Confirmation(teamName, true)));
+            this_.send(new Confirmation(teamName, true));
             this_.view.reset();
         };
 
         this.incorrect = function(teamName) {
-            this_.socket.send(JSON.stringify(new Confirmation(teamName, false)));
+            this_.send(new Confirmation(teamName, false));
+        };
+
+        this.send = function(message) {
+            this_.socket.send(JSON.stringify(message));
         };
     }
 

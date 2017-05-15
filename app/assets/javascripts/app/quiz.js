@@ -49,11 +49,15 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
         }
 
         this.sendAnswer = function(questionNumber, answer) {
-            this_.socket.send(JSON.stringify(new Answer(questionNumber, answer)));
+            this_.send(new Answer(questionNumber, answer));
         };
 
         this.buzz = function(questionNumber) {
-            this_.socket.send(JSON.stringify(new Buzz(questionNumber)));
+            this_.send(new Buzz(questionNumber));
+        };
+
+        this.send = function(message) {
+            this_.socket.send(JSON.stringify(message));
         };
     }
 

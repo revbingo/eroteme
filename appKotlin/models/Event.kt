@@ -6,7 +6,7 @@ sealed class Event(val type: String) {
 
     class RegistrationResponse(val team: Team): Event("registrationResponse")
 
-    class TeamListResponse(val teams: Collection<Team>): Event("teamList")
+    class QuizState(val teams: Collection<Team>): Event("quizState")
 
     class Buzz(val team: Team)
 
