@@ -1,11 +1,13 @@
 package models
 
+import controllers.CreateQuizForm
 import play.Logger
+import play.inject.Injector
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val soundAllocator: SoundAllocator) {
+class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val soundAllocator: SoundAllocator, val injector: Injector) {
 
     private val requestLogger = Logger.of("requestLogger")
 
@@ -18,6 +20,23 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     var currentQuestionNumber = 0;
 
     var questionSource: QuestionSource = FreeQuestionSource()
+
+    fun startQuiz(quizConfig: CreateQuizForm) {
+        firstAnswerScores = quizConfig.singleAnswer
+        questionCount = quizConfig.questionCount
+        currentQuestionNumber = 0
+
+        questionSource = when (quizConfig.questionSource) {
+            "byo" -> FreeQuestionSource()
+            "opentrivia" -> injector.instanceOf(OpenTriviaQuestionSource::class.java)
+            else -> FixedQuestionSource()
+        }
+
+        answerType = when (quizConfig.questionType) {
+            "voice" -> Event.AnswerType.VOICE
+            else -> Event.AnswerType.TEXT
+        }
+    }
 
     fun join(teamName: String, out: JsonWebSocket) {
         requestLogger.info("Join:" + teamName)

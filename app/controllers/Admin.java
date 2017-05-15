@@ -1,8 +1,7 @@
 package controllers;
 
-import models.*;
+import models.QuizMaster;
 import play.data.FormFactory;
-import play.libs.ws.WSClient;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.admin.configure;
@@ -16,8 +15,6 @@ public class Admin extends Controller {
 
 	@Inject QuizMaster quizMaster;
 
-	@Inject WSClient wsClient;
-
 	public Result index() {
 		return ok(index.render());
 	}
@@ -28,33 +25,7 @@ public class Admin extends Controller {
 
 	public Result create() {
 		CreateQuizForm quizConfig = factory.form(CreateQuizForm.class).bindFromRequest().get();
-		quizMaster.setFirstAnswerScores(quizConfig.getSingleAnswer());
-		quizMaster.setQuestionCount(quizConfig.getQuestionCount().intValue());
-		quizMaster.setCurrentQuestionNumber(0);
-
-		QuestionSource source;
-		switch(quizConfig.getQuestionSource()) {
-			case "byo":
-				source = new FreeQuestionSource();
-				break;
-			case "opentrivia":
-				source = new OpenTriviaQuestionSource(wsClient);
-				break;
-			default:
-				source = new FixedQuestionSource();
- 		}
-		quizMaster.setQuestionSource(source);
-
-		Event.AnswerType answerType = null;
-		switch(quizConfig.getQuestionType()) {
-			case "text":
-				answerType = Event.AnswerType.TEXT;
-				break;
-			case "voice":
-				answerType = Event.AnswerType.VOICE;
-				break;
-		}
-		quizMaster.setAnswerType(answerType);
+		quizMaster.startQuiz(quizConfig);
 		return redirect("/admin");
 	}
 }

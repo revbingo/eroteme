@@ -14,9 +14,11 @@ class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster, val 
     }
 
     fun messageReceived(teamName: String, message: JsonNode) {
-        requestLogger.info("Json:" + Json.stringify(message))
-
         val type = message.get("type").asText()
+
+        if(type != "pong") {
+            requestLogger.info("Json:" + Json.stringify(message))
+        }
 
         val team = quizMaster.teamRoster[teamName] ?: Team.nil()
 

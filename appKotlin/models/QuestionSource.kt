@@ -7,6 +7,7 @@ import play.libs.Json
 import play.libs.ws.WSClient
 import play.libs.ws.WSResponse
 import java.util.concurrent.CompletionStage
+import javax.inject.Inject
 import javax.inject.Singleton
 
 abstract class QuestionSource {
@@ -23,7 +24,7 @@ abstract class QuestionSource {
 data class OpenTriviaResponse(@JsonProperty("response_code") val response_code: Int, @JsonProperty("results") val results: List<OpenTriviaQuestion>)
 data class OpenTriviaQuestion(@JsonProperty("category") val category: String, @JsonProperty("type") val type: String, @JsonProperty("difficulty") val difficulty: String, @JsonProperty("question") val question: String, @JsonProperty("correct_answer") val correct_answer: String)
 
-class OpenTriviaQuestionSource(val ws: WSClient): QuestionSource() {
+class OpenTriviaQuestionSource @Inject constructor(val ws: WSClient): QuestionSource() {
 
     private fun loadQuestions(): List<Event.Question> {
         Logger.info("Fetching questions from OpenTrivia")
