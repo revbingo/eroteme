@@ -16,6 +16,9 @@ public class Admin extends Controller {
 	@Inject QuizMaster quizMaster;
 
 	public Result index() {
+		if(quizMaster.getQuizState() == QuizMaster.QuizState.NOT_STARTED) {
+			return redirect("/newQuiz");
+		}
 		return ok(index.render());
 	}
 

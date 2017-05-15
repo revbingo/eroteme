@@ -21,6 +21,12 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
 
     var questionSource: QuestionSource = FreeQuestionSource()
 
+    enum class QuizState {
+        NOT_STARTED, READY, IN_PROGRESS, FINISHED
+    }
+
+    var quizState: QuizState = QuizState.NOT_STARTED
+
     fun startQuiz(quizConfig: CreateQuizForm) {
         firstAnswerScores = quizConfig.singleAnswer
         questionCount = quizConfig.questionCount
@@ -36,6 +42,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
             "voice" -> Event.AnswerType.VOICE
             else -> Event.AnswerType.TEXT
         }
+        quizState = QuizState.READY
     }
 
     fun join(teamName: String, out: JsonWebSocket) {
@@ -82,9 +89,11 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     }
 
     fun askNextQuestion() {
+        if(quizState == QuizState.READY) quizState = QuizState.IN_PROGRESS
         currentQuestionNumber++;
         if(currentQuestionNumber > questionCount) {
             val endQuiz = Event.EndQuiz()
+            quizState = QuizState.FINISHED
             notifyAllTeams(endQuiz)
             notifyAdmin(endQuiz)
             return
