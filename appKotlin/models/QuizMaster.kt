@@ -1,6 +1,6 @@
 package models
 
-import controllers.CreateQuizForm
+import controllers.forms.CreateQuizForm
 import play.Logger
 import play.inject.Injector
 import javax.inject.Inject

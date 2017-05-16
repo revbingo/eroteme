@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.forms.CreateQuizForm;
 import models.QuizMaster;
 import play.data.FormFactory;
 import play.mvc.Controller;
