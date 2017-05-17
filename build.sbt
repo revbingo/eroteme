@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
 
 kotlinLib("stdlib")
 
-kotlinSource in Compile := baseDirectory( _ / "appKotlin" ).value
+kotlinSource in Compile := baseDirectory( _ / "app" ).value
 
 routesGenerator := InjectedRoutesGenerator
 
