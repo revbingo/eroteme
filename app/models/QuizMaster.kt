@@ -9,8 +9,6 @@ import javax.inject.Singleton
 @Singleton
 class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val soundAllocator: SoundAllocator, val injector: Injector) {
 
-    private val requestLogger = Logger.of("requestLogger")
-
     val teamRoster = mutableMapOf<String, Team>()
     private var admin: Admin? = null
 
@@ -46,7 +44,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     }
 
     fun join(teamName: String, out: JsonWebSocket) {
-        requestLogger.info("Join:" + teamName)
+        Logger.info("Team $teamName joined")
 
         val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out).apply {
             sound = soundAllocator.allocateSound()
@@ -58,15 +56,21 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         sendTeamStateToAdmin()
     }
 
+    fun leave(teamName: String) {
+        Logger.info("Team $teamName left or was removed")
+        teamRoster.remove(teamName)
+        sendTeamStateToAdmin()
+    }
+
     fun registerAdmin(outSocket: JsonWebSocket) {
-        requestLogger.info("Admin join")
+        Logger.info("Admin joined")
         admin?.destroy()
         admin = Admin(outSocket)
         sendTeamStateToAdmin()
     }
 
     fun deregisterAdmin() {
-        requestLogger.info("Admin leave")
+        Logger.info("Admin left")
         admin = null
     }
 
@@ -74,11 +78,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         val team = teamRoster[teamName] ?: return
         team.status = status
 
-        if (status == Team.Status.GONE) {
-            teamRoster.remove(teamName)
-        }
-
-        requestLogger.info("$teamName is $status")
+        Logger.info("$teamName is $status")
         sendTeamStateToAdmin()
     }
 

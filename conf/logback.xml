@@ -14,15 +14,23 @@
         <file>logs/application.log</file>
     </appender>
 
+    <appender name="WS_LOG" class="ch.qos.logback.core.FileAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <append>false</append>
+        <file>logs/wstraffic.log</file>
+    </appender>
+
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="application" level="debug" additivity="false">
+    <logger name="application" level="info" additivity="false">
         <appender-ref ref="APP_LOG" />
     </logger>
 
-    <logger name="requestLogger" level="debug" additivity="false">
-        <appender-ref ref="APP_LOG" />
+    <logger name="websocketLogger" level="debug" additivity="false">
+        <appender-ref ref="WS_LOG" />
     </logger>
 </configuration>

@@ -34,7 +34,7 @@ class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster, val 
             "buzz" -> quizMaster.teamBuzzed(Event.Buzz(team))
             "nextQuestion" -> quizMaster.askNextQuestion()
             "answer" -> quizMaster.teamAnswered(Event.QuestionAnswered(team, message.get("questionNumber").asInt(), message.get("answer").asText()))
-
+            "removal" -> quizMaster.leave(teamName)
             else -> Logger.warn("Unexpected message type:" + message.toString())
         }
     }

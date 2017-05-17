@@ -8,7 +8,7 @@
 	<div id="nextQuestion"></div>
 
 	<script id="teamListTmpl" type="text/jsrender">
-		<li data-team-name="{{:name}}" class="team list-group-item {{if (buzzOrder < 999)}}buzzed{{/if}} {{if (status == 'AWOL') }}awol{{/if}}">
+		<li data-team-name="{{:name}}" class="team list-group-item {{if (buzzOrder < 999)}}buzzed{{/if}} {{if (status == 'AWOL') }}awol{{/if}} {{if (status == 'GONE') }}gone{{/if}}">
 			<div class="score">
 				<button class="btn btn-default btn-success plusScore"><i class="fa fa-plus"></i></button>
 				<span class="label label-warning">{{:score}}</span>
@@ -24,6 +24,11 @@
 			{{if (buzzOrder < 999) || latestResponse != null}}
 				<button class="btn btn-default btn-success correct"><i class="fa fa-check"></i></button>
 				<button class="btn btn-default btn-success incorrect"><i class="fa fa-times"></i></button>
+			{{/if}}
+			</div>
+			<div class="actions">
+			{{if (status == 'GONE')}}
+				<a id="removeTeam">Remove</a>
 			{{/if}}
 			</div>
 		</li>

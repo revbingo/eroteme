@@ -45,6 +45,10 @@ require(["jquery", "bootstrap", "jsrender"], function($){
             this_.send(new Confirmation(teamName, false));
         };
 
+        this.remove = function(teamName) {
+            this_.send(new Removal(teamName));
+        };
+
         this.send = function(message) {
             this_.socket.send(JSON.stringify(message));
         };
@@ -79,6 +83,10 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 
             $(".incorrect").click(function() {
                 this_.controller.incorrect(this_.findTeamName(this));
+            });
+
+            $("#removeTeam").click(function() {
+                this_.controller.remove(this_.findTeamName(this));
             });
         };
 
@@ -144,5 +152,10 @@ require(["jquery", "bootstrap", "jsrender"], function($){
         this.answerType = "voice";
         this.questionNumber = questionNumber;
         this.answer = correct.toString();
+    }
+
+    function Removal(teamName) {
+        this.type = "removal";
+        this.team = teamName;
     }
 });

@@ -37,7 +37,6 @@ class PingManager @Inject constructor(val quizMaster: QuizMaster, val lifecycle:
         pingCount.filter { it.value > 10 }.forEach { teamName, _ ->
             play.Logger.info("Team $teamName have been removed - timeout")
 
-            pingCount.remove(teamName)
             quizMaster.statusChange(teamName, Team.Status.GONE)
         }
     }
