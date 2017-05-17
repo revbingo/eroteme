@@ -15,8 +15,6 @@ libraryDependencies ++= Seq(
 
 kotlinLib("stdlib")
 
-kotlinSource in Compile := baseDirectory( _ / "app" ).value
-
 routesGenerator := InjectedRoutesGenerator
 
 LessKeys.compress in Assets := true

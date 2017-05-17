@@ -1,6 +1,6 @@
 package models
 
-import controllers.forms.CreateQuizForm
+import models.forms.CreateQuizForm
 import play.Logger
 import play.inject.Injector
 import javax.inject.Inject
@@ -15,7 +15,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     var answerType = Event.AnswerType.VOICE
     var firstAnswerScores = true
     var questionCount = 20
-    var currentQuestionNumber = 0;
+    var currentQuestionNumber = 0
 
     var questionSource: QuestionSource = FreeQuestionSource()
 
@@ -26,8 +26,8 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     var quizState: QuizState = QuizState.NOT_STARTED
 
     fun startQuiz(quizConfig: CreateQuizForm) {
-        firstAnswerScores = quizConfig.singleAnswer
-        questionCount = quizConfig.questionCount
+        firstAnswerScores = quizConfig.singleAnswer!!
+        questionCount = quizConfig.questionCount!!
         currentQuestionNumber = 0
 
         questionSource = when (quizConfig.questionSource) {
@@ -90,7 +90,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
 
     fun askNextQuestion() {
         if(quizState == QuizState.READY) quizState = QuizState.IN_PROGRESS
-        currentQuestionNumber++;
+        currentQuestionNumber++
         if(currentQuestionNumber > questionCount) {
             val endQuiz = Event.EndQuiz()
             quizState = QuizState.FINISHED
