@@ -145,6 +145,8 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
 
     fun teamAnswered(answerEvent: Event.QuestionAnswered) {
         with(answerEvent) {
+            val responseOrder = buzzerManager.respond(team)
+            notifyAdmin(Event.BuzzAck(team, responseOrder))
             val correct = questionSource.answer(questionNumber, response)
 
             if(correct) {
