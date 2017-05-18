@@ -1,6 +1,12 @@
 require(["jquery", "bootstrap", "jsrender"], function ($) {
     new Controller();
 
+    function decodeHtml(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+
     function Controller() {
         this.socket = register();
         this.model = new Model();
@@ -8,7 +14,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
         var this_ = this;
 
         function register() {
-            var socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind?teamName=" + teamName);
+            var socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/api/bind?teamName=" + decodeHtml(teamName));
 
             socket.onmessage = function(event) {
                 var json = JSON.parse(event.data);
