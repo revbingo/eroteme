@@ -36,8 +36,12 @@
 
 	<script id="nextQuestionTmpl" type="text/jsrender">
 		<div id="questionArea">
-			<div id="question">Q: {{:question}}</div>
-			<div id="answer">A: {{:answer}}</div>
+			{{if (question != "")}}
+				<div id="question">Q: {{:question}}</div>
+				<div id="answer">A: {{:answer}}</div>
+			{{else}}
+				<div id="question">Fingers on buzzers!</div>
+			{{/if}}
 		</div>
 	</script>
 }

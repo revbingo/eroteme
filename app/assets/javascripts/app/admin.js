@@ -82,6 +82,7 @@ require(["jquery", "bootstrap", "jsrender"], function($){
             });
 
             $(".incorrect").click(function() {
+                console.log("team name is " + this_.findTeamName(this));
                 this_.controller.incorrect(this_.findTeamName(this));
             });
 
