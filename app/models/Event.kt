@@ -4,7 +4,7 @@ sealed class Event(val type: String) {
 
     class QuestionAnswered(val team: Team, val questionNumber: Int, val response: String): Event("questionAnswered")
 
-    class RegistrationResponse(val team: Team): Event("registrationResponse")
+    class Registered(val team: Team): Event("registered")
 
     class QuizState(val teams: Collection<Team>): Event("quizState")
 

@@ -57,7 +57,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         val theTeam = teamRoster.get(teamName) ?: return
         statusChange(theTeam.name, Team.Status.LIVE)
         theTeam.bind(out)
-        theTeam.notify(Event.RegistrationResponse(theTeam))
+        theTeam.notify(Event.Registered(theTeam))
         sendTeamStateToAdmin()
     }
 

@@ -28,7 +28,7 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
                         this_.model.scored(json.team.score);
                         this_.view.updateScore();
                         break;
-                    case "registrationResponse":
+                    case "registered":
                         this_.model.scored(json.team.score);
                         this_.view.updateScore();
                         break;
