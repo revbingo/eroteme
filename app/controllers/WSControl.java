@@ -24,7 +24,7 @@ public class WSControl extends Controller {
 		return WebSocket.whenReady((in,out) -> {
 			JsonWebSocket outSocket = new JsonWebSocket(out);
 			
-			quizMaster.join(teamName, outSocket);
+			quizMaster.bind(teamName, outSocket);
 			
 			in.onMessage((json) -> {
 				try {

@@ -27,6 +27,7 @@ public class Application extends Controller {
     	String teamName = request().body().asFormUrlEncoded().get("teamName")[0];
     	String hashedName = new String(Base64.getEncoder().encode(teamName.getBytes()));
     	response().setCookie(TEAM_COOKIE, hashedName);
+    	quizMaster.join(teamName);
     	return redirect("/quiz");
     }
     

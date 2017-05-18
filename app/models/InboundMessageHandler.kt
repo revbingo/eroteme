@@ -23,7 +23,7 @@ class InboundMessageHandler @Inject constructor(val quizMaster: QuizMaster, val 
         val team = quizMaster.teamRoster[teamName] ?: Team.nil()
 
         when(type) {
-            "pong" -> pingManager.pong(teamName)
+            "pong" -> pingManager.pong(team)
             "score" -> {
                 val teamThatScored = quizMaster.teamRoster[message.get("team").asText()] ?: return
                 val delta = message.get("delta").asInt()

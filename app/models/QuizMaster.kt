@@ -43,15 +43,20 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         quizState = QuizState.READY
     }
 
-    fun join(teamName: String, out: JsonWebSocket) {
+    fun join(teamName: String) {
         Logger.info("Team $teamName joined")
 
-        val theTeam = teamRoster.getOrPut(teamName, { Team(teamName, out).apply {
+        teamRoster.put(teamName, Team(teamName).apply {
             sound = soundAllocator.allocateSound()
-        } })
-        theTeam.rebind(out)
+        })
 
+        sendTeamStateToAdmin()
+    }
+
+    fun bind(teamName: String, out: JsonWebSocket) {
+        val theTeam = teamRoster.get(teamName) ?: return
         statusChange(theTeam.name, Team.Status.LIVE)
+        theTeam.bind(out)
         theTeam.notify(Event.RegistrationResponse(theTeam))
         sendTeamStateToAdmin()
     }

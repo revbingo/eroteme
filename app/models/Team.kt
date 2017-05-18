@@ -2,14 +2,15 @@ package models
 
 import play.libs.Json
 
-class Team(val name: String, private var out: JsonWebSocket?) {
+class Team(val name: String) {
+    private var out: JsonWebSocket? = null
     private val NOT_BUZZED = 1000
 
     var score = 0
     var buzzOrder = NOT_BUZZED
 
     var latestResponse: String? = null
-    var status: Status = Status.LIVE
+    var status: Status = Status.JOINING
 
     var sound: String = "ping.wav"
 
@@ -29,17 +30,17 @@ class Team(val name: String, private var out: JsonWebSocket?) {
         out?.write(Json.toJson(msg))
     }
 
-    fun rebind(msg: JsonWebSocket) {
+    fun bind(msg: JsonWebSocket) {
         this.out = msg
     }
 
     companion object {
         fun nil(): Team {
-            return Team("", null)
+            return Team("")
         }
     }
 
     enum class Status {
-        LIVE, AWOL, GONE
+        JOINING, LIVE, AWOL, GONE
     }
 }
