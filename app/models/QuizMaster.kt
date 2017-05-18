@@ -3,6 +3,7 @@ package models
 import models.forms.CreateQuizForm
 import play.Logger
 import play.inject.Injector
+import play.libs.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,7 +55,10 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     }
 
     fun bind(teamName: String, out: JsonWebSocket) {
-        val theTeam = teamRoster.get(teamName) ?: return
+        val theTeam = teamRoster.getOrElse(teamName) {
+            out.write(Json.toJson(Event.Removed()))
+            return
+        }
         statusChange(theTeam.name, Team.Status.LIVE)
         theTeam.bind(out)
         theTeam.notify(Event.Registered(theTeam))

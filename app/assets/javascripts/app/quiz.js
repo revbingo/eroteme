@@ -45,6 +45,9 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
                     case "endQuiz":
                         this_.view.endQuiz();
                         break;
+                    case "removed":
+                        window.location = "http://" + window.location.hostname + ":" + window.location.port + "/logout";
+                        break;
                 }
             };
 
