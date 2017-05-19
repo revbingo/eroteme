@@ -97,7 +97,6 @@ require(["jquery", "bootstrap", "jsrender"], function($){
 
         this.displayNextQuestion = function() {
             var template = this_.nextQuestionTmpl.render(this_.model.nextQuestion);
-
             $("#nextQuestion").html(template);
         };
 
