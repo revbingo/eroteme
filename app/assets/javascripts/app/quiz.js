@@ -79,7 +79,17 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
         var buzzerTmp = $.templates("#buzzer");
 
         this.displayQuestion = function() {
-            this_[this_.model.currentQuestion.answerType](this_.model.currentQuestion.question);
+            var q = this_.model.currentQuestion.question;
+            var answerType = this_.model.currentQuestion.answerType;
+
+            $("#questionArea").css("color", "white");
+            var questionText = "Q" + q.questionNumber;
+            if(q.question !== "") {
+                questionText += ": " + q.question;
+            }
+            $("#questionArea").html(questionText);
+
+            this_[answerType](q);
         };
 
         this.displayAnswer = function() {
@@ -100,13 +110,6 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
         };
 
         this.TEXT = function(currentQuestion) {
-            $("#questionArea").css("color", "white");
-            var questionText = "Q" + currentQuestion.questionNumber;
-            if(currentQuestion.question !== "") {
-                questionText += ": " + currentQuestion.question;
-            }
-            $("#questionArea").html(questionText);
-
             $("#answerArea").html(simpleAnswerTmpl.render([{}]));
             $("#submitAnswer").click(function() {
                 controller.sendAnswer(currentQuestion.questionNumber, $("#answer").val());
@@ -115,22 +118,12 @@ require(["jquery", "bootstrap", "jsrender"], function ($) {
         };
 
         this.VOICE = function(currentQuestion) {
-            $("#questionArea").css("color", "white");
-            var questionText = "Q" + currentQuestion.questionNumber;
-            if(currentQuestion.question !== "") {
-                questionText += currentQuestion.question;
-            }
-            $("#questionArea").html(questionText);
-
             $("#answerArea").html(buzzerTmp.render([{}]));
+            this_.buzzAnswerHandler(currentQuestion);
             $("#buzzer").click(function() {
                 $("#answerArea").empty();
                 controller.buzz(currentQuestion.questionNumber);
             });
-        };
-
-        this.debug = function(data) {
-            $("#debug").html(JSON.stringify(data));
         };
     }
 
