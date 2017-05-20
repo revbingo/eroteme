@@ -1,5 +1,7 @@
 package models
 
+import play.libs.Json
+
 sealed class Event(val type: String) {
 
     abstract class TeamEvent(type: String, val team: Team): Event(type)
@@ -51,3 +53,5 @@ sealed class Event(val type: String) {
         TEXT, VOICE
     }
 }
+
+fun Event.asJson() = Json.toJson(this)

@@ -1,7 +1,5 @@
 package models
 
-import play.libs.Json
-
 class Team(val name: String) {
     private var out: JsonWebSocket? = null
     private val NOT_BUZZED = 1000
@@ -27,7 +25,7 @@ class Team(val name: String) {
     }
 
     fun notify(msg: Event) {
-        out?.write(Json.toJson(msg))
+        out?.write(msg.asJson())
     }
 
     fun bind(msg: JsonWebSocket) {
