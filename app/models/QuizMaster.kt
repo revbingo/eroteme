@@ -61,7 +61,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         }
         statusChange(theTeam.name, Team.Status.LIVE)
         theTeam.bind(out)
-        theTeam.notify(Event.Registered(theTeam))
+        notifyTeam(Event.Registered(theTeam))
         sendTeamStateToAdmin()
     }
 
@@ -123,7 +123,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
         val team = buzzEvent.team
         val responseOrder = buzzerManager.respond(team)
         val ack = Event.BuzzAck(team, responseOrder)
-        notifyTeam(team, ack)
+        notifyTeam(ack)
         notifyAdmin(ack)
         sendTeamStateToAdmin()
     }
@@ -131,7 +131,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
     fun teamScored(scoreEvent: Event.Scored) {
         scoreEvent.team.scored(scoreEvent.delta)
         scoreEvent.team.latestResponse = null
-        notifyTeam(scoreEvent.team, Event.Scored(scoreEvent.team, scoreEvent.delta))
+        notifyTeam(Event.Scored(scoreEvent.team, scoreEvent.delta))
         sendTeamStateToAdmin()
     }
 
@@ -148,7 +148,7 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
                 team.resetBuzzer()
             }
         }
-        notifyTeam(confirmation.team, confirmation)
+        notifyTeam(confirmation)
         sendTeamStateToAdmin()
     }
 
@@ -171,7 +171,10 @@ class QuizMaster @Inject constructor(val buzzerManager: BuzzerManager, val sound
 
     fun notifyAllTeams(msg: Event) = eachTeam { it.notify(msg) }
 
-    fun notifyTeam(team: Team, event: Event) = team.notify(event)
+    fun notifyTeam(event: Event, teamToNotify: Team = Team.nil()) = when(event) {
+        is Event.TeamEvent -> event.team.notify(event)
+        else -> teamToNotify.notify(event)
+    }
 
     fun sendTeamStateToAdmin() = admin?.notify(Event.QuizState(teamRoster.values))
 

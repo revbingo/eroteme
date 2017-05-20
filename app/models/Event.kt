@@ -2,20 +2,21 @@ package models
 
 sealed class Event(val type: String) {
 
-    class QuestionAnswered(val team: Team, val questionNumber: Int, val response: String): Event("questionAnswered")
+    abstract class TeamEvent(type: String, val team: Team): Event(type)
 
-    class Registered(val team: Team): Event("registered")
+    class QuestionAnswered(team: Team, val questionNumber: Int, val response: String): TeamEvent("questionAnswered", team)
+
+    class Registered(team: Team): TeamEvent("registered", team)
 
     class Removed: Event("removed")
 
     class QuizState(val teams: Collection<Team>): Event("quizState")
 
+    class Buzz(team: Team): TeamEvent("buzz", team)
 
-    class Buzz(val team: Team)
+    class BuzzAck(team: Team, val responseOrder: Int): TeamEvent("buzzAck", team)
 
-    class BuzzAck(val team: Team, val responseOrder: Int): Event("buzzAck")
-
-    class Scored(val team: Team, val delta: Int): Event("scored")
+    class Scored(team: Team, val delta: Int): TeamEvent("scored", team)
 
     class Ping : Event("ping")
 
@@ -23,7 +24,7 @@ sealed class Event(val type: String) {
 
     class AskQuestion(val answerType: AnswerType, val question: Question): Event("askQuestion")
 
-    class AnswerConfirmation(val team: Team, val correct: Boolean): Event("confirmation")
+    class AnswerConfirmation(team: Team, val correct: Boolean): TeamEvent("confirmation", team)
 
     class EndQuiz: Event("endQuiz")
 
