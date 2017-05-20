@@ -18,9 +18,9 @@ import java.util.Set;
 
 public class Admin extends Controller {
 
-	@Inject FormFactory factory;
+	@Inject private FormFactory factory;
 
-	@Inject QuizMaster quizMaster;
+	@Inject private QuizMaster quizMaster;
 
 	public Result index() {
 		if(quizMaster.getQuizState() == QuizMaster.QuizState.NOT_STARTED) {
