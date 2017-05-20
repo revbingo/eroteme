@@ -11,9 +11,11 @@ GET		/admin						controllers.Admin.index()
 GET     /newQuiz              controllers.Admin.configure()
 POST    /createQuiz           controllers.Admin.create()
 
+
 # Websocket API
 GET		/api/bind					controllers.WSControl.bind(teamName:String)
 GET		/api/bindAdmin				controllers.WSControl.bindAdmin()
 
 # Map static resources from the /public folder to the /assets URL path
+GET     /assets/qr                  controllers.Admin.qrCode(url: String)
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

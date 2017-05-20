@@ -6,12 +6,16 @@ scalaVersion := "2.11.7"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
+resolvers += "Jitpack" at "https://jitpack.io"
+
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
   filters
 )
+
+libraryDependencies += "com.github.kenglxn.qrgen" % "javase" % "2.2.0"
 
 kotlinLib("stdlib")
 

@@ -1,5 +1,11 @@
+@(hosturl: String)
+
 @main("qu.est.io/ns admin", "app/admin.min") {
 
+	<div id="qr">
+		<h3>Scan here to join!</h3>
+		<img src="/assets/qr?url=@hosturl" />
+	</div>
 	<h2><a href="/newQuiz">New Quiz</a></h2>
 	<h1>Teams:</h1>
 	<ul class="list-group" id="teams">
